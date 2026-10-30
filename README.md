@@ -39,6 +39,24 @@ node sync.mjs --install-hooks  # 给两个源仓库装 post-commit 钩子（此�
 
 装了钩子之后，在 `super` 或 `super-sister` 里 commit 完，会自动跑一次同步；**同步失败只打印一行警告，不会阻止你的提交**（网络断了不该让你提交不了代码）。
 
+**幂等**：没有变化时第二次运行会直接说「内容与上次一致，无需提交」，不会产生空提交。判据是「源仓库的 `branch@sha` + 根目录手写文件」，不是树的哈希——`_state.json` 里有时间戳，用树比较会永远判定有变化（第一版就是这么写出重复提交的）。
+
+## 一个必须记住的坑：GitHub 账号
+
+这台机器的 git 凭据管理器里，`github.com` 默认用的是 **`cduking`**，但仓库属于 **`54huang`**。直接推会得到：
+
+```
+remote: Permission to 54huang/super.git denied to cduking.
+```
+
+解决办法（已经设好，在这个仓库的本地配置里）：
+
+```bash
+git config credential.username 54huang
+```
+
+**如果你换机器或凭据丢了，先设这一行再推。** 只读操作（`ls-remote`、`clone` 公开仓）不需要，因为那是匿名访问。
+
 ## 同步做了什么
 
 1. `git archive HEAD` 把每个源仓库的跟踪内容导出（不是文件系统复制，所以不受未跟踪文件干扰）
