@@ -92,6 +92,20 @@ log(`同步到 ${path.basename(ROOT)}：`);
 const state = { syncedAt: new Date().toISOString(), sources: {} };
 for (const src of SOURCES) state.sources[src.name] = inspect(src);
 
+// 判断"要不要提交"不能看 tree —— _state.json 里有 syncedAt，每次都变，
+// 用 tree 比较会永远判定"有变化"（第一版就是这么写出重复提交的）。
+// 改成比两件事：源仓库的 branch@sha 有没有变 + 根目录手写文件有没有被改。
+const oldState = (() => {
+  try { return JSON.parse(fs.readFileSync(path.join(ROOT, '_state.json'), 'utf8')); } catch { return null; }
+})();
+const sameSources = oldState && JSON.stringify(oldState.sources) === JSON.stringify(state.sources);
+const rootDirty = git('status', '--porcelain', '--', 'README.md', 'sync.mjs', '.gitattributes');
+const parent = tryGit('rev-parse', 'HEAD');
+if (parent && sameSources && !rootDirty) {
+  log('\n内容与上次一致，无需提交。');
+  process.exit(0);
+}
+
 // 根目录这几个文件是手写的，直接进索引
 fs.writeFileSync(path.join(ROOT, '_state.json'), JSON.stringify(state, null, 2) + '\n');
 git('add', '-A', '--', 'README.md', 'sync.mjs', '.gitattributes', '_state.json');
@@ -108,11 +122,6 @@ tryGit('rm', '-r', '-q', '--cached', '--ignore-unmatch', ...SOURCES.map((s) => s
 for (const src of SOURCES) git('read-tree', `--prefix=${src.name}/`, `refs/backup/${src.name}`);
 
 const tree = git('write-tree');
-const parent = tryGit('rev-parse', 'HEAD');
-if (parent && tryGit('rev-parse', `${parent}^{tree}`) === tree) {
-  log('\n内容与上次一致，无需提交。');
-  process.exit(0);
-}
 
 const tags = Object.entries(state.sources).map(([n, v]) => `${n}@${v.head}`).join(' + ');
 const body = Object.entries(state.sources)
