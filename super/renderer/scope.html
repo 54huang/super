@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>波形工作台 · v3「示波器」— 8 镜（9:16 · 1080×1920 · 30fps）</title>
+<style>
+  :root{
+    --bg:#070B09; --panel:#0E1512; --panel2:#121B17;
+    --line:rgba(94,242,160,.16); --line2:rgba(94,242,160,.30);
+    --grn:#5EF2A0; --amb:#F2A93B; --red:#E8503A;
+    --ink:#CBDAD0; --ink2:#6E8B7A; --ink3:#39524A;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:14px/1.6 "Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    display:flex; flex-direction:column; min-height:100vh;
+  }
+  header{padding:16px 26px 13px; border-bottom:1px solid var(--line)}
+  h1{
+    font-family:ui-monospace,Consolas,monospace; font-size:17px; margin:0 0 5px;
+    font-weight:600; letter-spacing:.10em; color:var(--grn);
+  }
+  .meta{color:var(--ink2); font-size:12px; font-family:ui-monospace,Consolas,monospace}
+  main{flex:1; display:flex; gap:24px; padding:20px 26px 30px; align-items:flex-start}
+  .stage{display:flex; flex-direction:column; align-items:center; gap:10px}
+  .frame{
+    background:#050807; overflow:hidden;
+    box-shadow:0 0 0 1px rgba(94,242,160,.20), 0 20px 60px rgba(0,0,0,.8);
+    line-height:0;
+  }
+  canvas{display:block; height:min(76vh,820px); width:auto; max-width:100%}
+  .side{flex:1; min-width:330px; max-width:520px; display:flex; flex-direction:column; gap:12px}
+  .card{background:var(--panel); border:1px solid var(--line); padding:13px 15px}
+  .card h2{
+    font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink2); margin:0 0 10px; font-weight:700;
+    font-family:ui-monospace,Consolas,monospace;
+  }
+  .row{display:flex; gap:7px; flex-wrap:wrap; align-items:center}
+  button{
+    font:inherit; font-size:12.5px; padding:6px 11px; cursor:pointer;
+    border:1px solid var(--line); background:var(--panel2); color:var(--ink);
+    transition:.14s; font-family:ui-monospace,Consolas,monospace;
+  }
+  button:hover{border-color:var(--line2); color:var(--grn)}
+  button.active{background:rgba(94,242,160,.14); border-color:var(--grn); color:var(--grn); font-weight:600}
+  button.ghost{background:transparent}
+  input[type=range]{width:100%; accent-color:#5EF2A0}
+  .time{
+    font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--ink2);
+    display:flex; justify-content:space-between; margin-top:6px;
+  }
+  label.chk{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink2); cursor:pointer}
+  .hint{font-size:12.5px; color:var(--ink2)}
+  .hint b{color:var(--ink)}
+  .bar{height:2px; background:rgba(94,242,160,.12); overflow:hidden; margin-top:9px}
+  .bar>i{display:block; height:100%; width:0; background:var(--grn); transition:width .1s}
+  .tag{
+    font-family:ui-monospace,Consolas,monospace; font-size:11px; padding:2px 8px;
+    border:1px solid rgba(94,242,160,.45); color:var(--grn); letter-spacing:.08em;
+  }
+  ol{margin:6px 0 0; padding-left:17px; color:var(--ink2); font-size:12.5px}
+  ol li{margin:5px 0}
+  ol b{color:var(--grn)}
+  .swatches{display:flex; gap:5px; margin-top:9px}
+  .sw{width:30px; height:18px; border:1px solid rgba(255,255,255,.14)}
+  .kv{display:grid; grid-template-columns:68px 1fr; gap:3px 10px; font-size:12.5px; color:var(--ink2)}
+  .kv b{color:var(--ink); font-weight:600}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>RAII · SCOPE 2000</h1>
+  <div class="meta">v3「示波器」· 8 镜 · 1080×1920 · 9:16 · 30fps · 确定性逐帧 · 波形即时间</div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="frame"><canvas id="cv"></canvas></div>
+    <div class="row" style="justify-content:center">
+      <span class="tag" id="shotTag">P01</span>
+      <span class="meta" id="frameInfo">帧 0 / 0</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2>镜头 / 播放</h2>
+      <div class="row" id="shotBtns" style="margin-bottom:9px"></div>
+      <div class="row">
+        <button id="btnPlay" class="active">暂停</button>
+        <button id="btnLoop" class="ghost">循环：开</button>
+        <button id="btnRestart" class="ghost">回到开头</button>
+      </div>
+      <input type="range" id="scrub" min="0" max="4000" value="0" step="1" style="margin-top:11px" />
+      <div class="time"><span id="tCur">00:00.00</span><span id="tTot">00:04.00</span></div>
+    </div>
+
+    <div class="card">
+      <h2>这一版为什么换仪器</h2>
+      <div class="kv">
+        <b>v1</b><span>深空蓝：发光立方体 + 粒子</span>
+        <b>v2</b><span>制图台：纸墨 + 朱红批注</span>
+        <b>v3</b><span>示波器：两条时间序列的关系</span>
+      </div>
+      <div class="hint" style="margin-top:10px">
+        前两版都是<b>版面</b>——在平面上排信息。但 RAII 讲的是<b>构造与析构必须配对</b>，那是两条曲线的关系，一张静态图说不尽。示波器的横轴就是时间。
+      </div>
+      <div class="hint" style="margin-top:8px">
+        论点是<b>落差</b>：CH1 回到基线，CH2 停在半空。同一场异常，两条线的区别就是全部结论。
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#050807"></div>
+        <div class="sw" style="background:#5EF2A0"></div>
+        <div class="sw" style="background:#F2A93B"></div>
+        <div class="sw" style="background:#E8503A"></div>
+        <div class="sw" style="background:#CBDAD0"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>显示 / 导出</h2>
+      <div class="row" style="margin-bottom:9px">
+        <label class="chk"><input type="checkbox" id="chkSafe"> 安全区</label>
+        <label class="chk"><input type="checkbox" id="chkLabels" checked> 通道标签</label>
+      </div>
+      <div class="row">
+        <button id="btnFrame">导出当前帧</button>
+        <button id="btnSeq" class="ghost">导出整镜序列</button>
+      </div>
+      <div class="bar"><i id="prog"></i></div>
+      <div class="hint" id="expHint" style="margin-top:8px">逐帧确定性渲染，同一时间点永远同一张图。</div>
+    </div>
+
+    <div class="card">
+      <h2>八镜在讲什么</h2>
+      <ol>
+        <li><b>P01 上电</b> — 网格展开，自检。仪器先亮，讲的事后到。</li>
+        <li><b>P02 构造</b> — 波形抬到 +1.0，标注 ctor。资源在构造时被拿走。</li>
+        <li><b>P03 正常析构</b> — 落回基线，ΔT = 16.0ms，PAIRED。</li>
+        <li><b>P04 异常</b> — 触发灯亮，波形抖动，红色 throw。</li>
+        <li><b>P05 栈展开</b> — 阶梯下降，三层析构逐个盖章。</li>
+        <li><b>P06 对比上场</b> — CH2 出现，同样是异常。</li>
+        <li><b>P07 泄漏</b> — CH1 归零，CH2 停在半空，虚线指向 ∞。</li>
+        <li><b>P08 读数</b> — PAIRED / LEAKED 并置，一句话收尾。</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<script src="src/scope-renderer.js"></script>
+<script>
+(function(){
+  const S = window.Scope;
+  if (!S) { document.body.innerHTML = '<p style="padding:40px;color:#E8503A">渲染器没加载：检查 src/scope-renderer.js</p>'; return; }
+  const cv = document.getElementById('cv');
+  S.init(cv);
+
+  const $ = id => document.getElementById(id);
+  const shotBtns = $('shotBtns'), scrub = $('scrub');
+  const tCur = $('tCur'), tTot = $('tTot'), frameInfo = $('frameInfo');
+  const shotTag = $('shotTag'), btnPlay = $('btnPlay'), btnLoop = $('btnLoop');
+  const prog = $('prog'), expHint = $('expHint');
+
+  S.SHOTS.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.textContent = s.id + ' ' + s.name;
+    b.onclick = () => { S.select(i); syncShot(); };
+    shotBtns.appendChild(b);
+  });
+
+  const fmt = ms => {
+    const s = Math.floor(ms / 1000), f = Math.floor((ms % 1000) / 1000 * 30);
+    return '00:' + String(s).padStart(2,'0') + '.' + String(f).padStart(2,'0');
+  };
+
+  function syncShot(){
+    const s = S.SHOTS[S.state.shotIdx];
+    scrub.max = s.dur;
+    tTot.textContent = fmt(s.dur);
+    shotTag.textContent = s.id;
+    [...shotBtns.children].forEach((b, i) => b.classList.toggle('active', i === S.state.shotIdx));
+  }
+
+  S.onChange((st, shot) => {
+    scrub.value = st.t;
+    tCur.textContent = fmt(st.t);
+    const total = Math.round(shot.dur / 1000 * 30);
+    const cur = Math.min(total, Math.round(st.t / 1000 * 30));
+    frameInfo.textContent = '帧 ' + cur + ' / ' + total;
+    btnPlay.textContent = st.playing ? '暂停' : '播放';
+    btnPlay.classList.toggle('active', st.playing);
+  });
+
+  scrub.oninput = () => { S.state.playing = false; S.seek(+scrub.value); };
+  btnPlay.onclick = () => S.toggle();
+  btnLoop.onclick = () => { S.state.loop = !S.state.loop; btnLoop.textContent = '循环：' + (S.state.loop ? '开' : '关'); };
+  $('btnRestart').onclick = () => S.seek(0);
+  $('chkLabels').onchange = e => { S.state.labels = e.target.checked; S.seek(S.state.t); };
+  $('chkSafe').onchange = e => { S.state.safe = e.target.checked; S.seek(S.state.t); };
+  $('btnFrame').onclick = () => S.exportFrame();
+  $('btnSeq').onclick = async () => {
+    const total = Math.round(S.SHOTS[S.state.shotIdx].dur / 1000 * S.FPS);
+    expHint.textContent = '正在导出 ' + total + ' 帧，请允许浏览器连续下载…';
+    await S.exportSequence(1000 / S.FPS, (i, n) => {
+      prog.style.width = (i / n * 100) + '%';
+      expHint.textContent = '导出中 ' + i + ' / ' + n;
+    });
+    prog.style.width = '100%';
+    expHint.textContent = '完成：' + total + ' 帧。';
+  };
+
+  window.addEventListener('keydown', e => {
+    if (e.code === 'Space') { e.preventDefault(); S.toggle(); }
+    if (e.code === 'ArrowRight') { e.preventDefault(); S.state.playing = false; S.seek(S.state.t + 1000/30); }
+    if (e.code === 'ArrowLeft') { e.preventDefault(); S.state.playing = false; S.seek(S.state.t - 1000/30); }
+  });
+
+  syncShot();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "syncedAt": "2026-10-30T15:14:52.215Z",
+  "sources": {
+    "super": {
+      "head": "94e146b",
+      "branch": "main",
+      "subject": "第五种风格「暖摊灯箱」：换的不是表面，是光的方向",
+      "files": 100
+    },
+    "super-sister": {
+      "head": "ffd096e",
+      "branch": "main",
+      "subject": "补远端地址与两仓合并数：4 处应为 3 处",
+      "files": 25
+    }
+  }
+}

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>super · 风格展示台</title>
+<style>
+  :root{
+    --paper:#F7F4EC; --card:#FDFBF5; --ink:#1B1A17; --ink2:#5E5A50;
+    --rule:#D8D0BE; --red:#BE3A2B;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font:14px/1.7 "Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:56px 28px 80px}
+  header{border-bottom:1px solid var(--rule);padding-bottom:22px;margin-bottom:44px}
+  h1{
+    font:600 30px/1.3 "Songti SC","Source Han Serif CN","SimSun",serif;
+    margin:0 0 8px;letter-spacing:.01em;
+  }
+  header p{margin:0;color:var(--ink2);font-size:14px}
+  h2{
+    font:600 17px/1.4 "Songti SC","Source Han Serif CN","SimSun",serif;
+    margin:0 0 6px;
+  }
+  .lead{margin:0 0 26px;color:var(--ink2);font-size:13.5px;max-width:62ch}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:700px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--card);border:1px solid var(--rule);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+  .shot{background:#0d0d0d;line-height:0;border-bottom:1px solid var(--rule)}
+  .shot img{width:100%;display:block}
+  .body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+  .id{
+    font:11px/1 ui-monospace,Consolas,monospace;letter-spacing:.12em;
+    color:var(--ink2);text-transform:uppercase;margin-bottom:7px;
+  }
+  .body h3{
+    font:600 21px/1.3 "Songti SC","Source Han Serif CN","SimSun",serif;
+    margin:0 0 6px;
+  }
+  .oneliner{margin:0 0 14px;color:var(--ink);font-size:13.5px}
+  dl{
+    display:grid;grid-template-columns:auto 1fr;gap:5px 10px;
+    margin:0 0 16px;font-size:12.5px;line-height:1.65;
+  }
+  dt{color:var(--red);font-weight:600;white-space:nowrap}
+  dd{margin:0;color:var(--ink2)}
+  .acts{display:flex;gap:9px;flex-wrap:wrap;margin-top:auto}
+  .acts a{
+    font-size:12.5px;text-decoration:none;padding:7px 14px;border-radius:6px;
+    border:1px solid var(--rule);color:var(--ink);transition:.15s;
+  }
+  .acts a:hover{border-color:var(--ink2)}
+  .acts a.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .acts a.primary:hover{background:#000}
+  details{margin:14px 0 0;font-size:12.5px}
+  summary{cursor:pointer;color:var(--red);outline:none}
+  details pre{
+    margin:10px 0 0;padding:12px 13px;background:#F1EDE1;border-radius:6px;
+    overflow-x:auto;font:11.5px/1.75 ui-monospace,Consolas,monospace;
+    color:var(--ink);white-space:pre-wrap;word-break:break-word;
+  }
+  .meta{margin:12px 0 0;font-size:11.5px;color:var(--ink2)}
+
+  section{margin-top:56px}
+  .steps{list-style:none;padding:0;margin:16px 0 18px;counter-reset:s}
+  .steps li{
+    counter-increment:s;padding:9px 0 9px 34px;position:relative;
+    border-bottom:1px dotted var(--rule);font-size:13px;
+  }
+  .steps li:last-child{border-bottom:0}
+  .steps li::before{
+    content:counter(s);position:absolute;left:0;top:10px;
+    width:20px;height:20px;border:1px solid var(--rule);border-radius:50%;
+    font:11px/20px ui-monospace,Consolas,monospace;text-align:center;color:var(--ink2);
+  }
+  .steps b{font-weight:600}
+  .steps span{color:var(--ink2)}
+  .link{
+    display:inline-block;font-size:13px;color:var(--red);
+    text-decoration:none;border-bottom:1px solid rgba(190,58,43,.35);
+  }
+  .link:hover{border-bottom-color:var(--red)}
+  .notes{font-size:13px;color:var(--ink2);line-height:1.9;margin:14px 0 0;padding-left:18px}
+  .notes code{font:12px ui-monospace,Consolas,monospace;background:#F1EDE1;padding:1px 5px;border-radius:3px;color:var(--ink)}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>super</h1>
+  <p>三种已经跑通的视觉风格，和一条能走完的制作流程。先挑风格，再照流程做。</p>
+</header>
+
+<section style="margin-top:0">
+  <h2>风格展示台</h2>
+  <p class="lead">每种风格不是一张皮，是一整套画面约束——色值、线宽、字号、能不能表达某种语义，都在里面。选定之后，下面的「引导块」可以直接拿去用。</p>
+
+  <div class="grid">
+
+    <article class="card">
+      <div class="shot"><img src="docs/samples/style-02-drafting-table.jpg" alt="制图台风格示例：暖白纸面上一张技术词条卡，右下角有朱红批注"></div>
+      <div class="body">
+        <div class="id">02 · 现役 · 已出货</div>
+        <h3>制图台</h3>
+        <p class="oneliner">冷内容写在暖纸上，批注是人的动作。</p>
+        <dl>
+          <dt>适合</dt><dd>代码、公式、协议、条文这类精确符号系统；需要「严谨、被核对过」的语境</dd>
+          <dt>别用</dt><dd>需要表达动态先后、需要对比、轻松娱乐题材</dd>
+        </dl>
+        <div class="acts">
+          <a class="primary" href="renderer/index.html">打开工作台</a>
+          <a href="docs/cases/02-制图台.md">读风格卡</a>
+        </div>
+        <details>
+          <summary>复制引导块</summary>
+<pre>视觉：工程制图台，暖白纸面。底色 #F4EFE3→#E3D9C4 竖向渐变；
+细格 36px 透明度 0.045，粗格 180px 透明度 0.10，墨色 #1B1A17。
+线条：主笔 2.5px，辅助结构线 1px，引线 1px 虚线，边框 3px。
+强调：朱红 #BE3A2B 只用于批注、否定、盖章，面积不超过画面 3%。
+字体：中文标题宋体 600 字重，代码与数值用等宽；字号层级 52/25/20/17/13/11。
+语汇：四角定位标记、尺寸线、图号 FIG.、折角、纸屑。不要装饰性插画，
+不要光晕，不要科技蓝。质感来自纸与墨，不来自光。</pre>
+        </details>
+        <p class="meta">7 镜 · 30.000 秒 · 9:16 · 已合成 mp4</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="shot"><img src="docs/samples/style-03-oscilloscope.jpg" alt="示波器风格示例：黑玻璃面板上一条阶梯下降的荧光绿波形，右侧有竖线与读数框"></div>
+      <div class="body">
+        <div class="id">03 · 现役</div>
+        <h3>示波器</h3>
+        <p class="oneliner">横轴是时间，两条线的落差就是论证本身。</p>
+        <dl>
+          <dt>适合</dt><dd>表达两条序列的关系：正确／错误、承诺／兑现、前后对照</dd>
+          <dt>别用</dt><dd>信息流首帧（深色对比弱）、展示「是什么」、无字幕兜底、中文文字量大</dd>
+        </dl>
+        <div class="acts">
+          <a class="primary" href="renderer/scope.html">打开工作台</a>
+          <a href="docs/cases/03-示波器.md">读风格卡</a>
+        </div>
+        <details>
+          <summary>复制引导块</summary>
+<pre>视觉：实验室示波器，黑玻璃面板。底色 #0C1310→#030605；
+网格横向 10 格，绿灰刻度线，透明度不超过 0.08。
+通道：CH1 荧光绿 #5EF2A0，CH2 琥珀 #F2A93B，两条基线间距大于振幅。
+辉光：用 5.5px / 2.6px / 1px 三段描边叠出，不要用 blur 或阴影滤镜。
+读数：全等宽字，13px 小号，大写英文；时基 / 触发 / 通道标签齐全。
+语汇：扫描束、光标、测量框、CAL 标记。要像仪器，不要像科幻 UI——
+不要渐变光斑，不要霓虹紫，不要圆角卡片。</pre>
+        </details>
+        <p class="meta">8 镜 · 32 秒 · 9:16 · 独立实验片</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="shot"><img src="docs/samples/style-04-blackboard.jpg" alt="黑板粉笔风格示例：墨绿板面上先用白粉笔写一行代码并被红笔划掉，旁边用蓝粉笔重写，左侧一个蓝色大括号"></div>
+      <div class="body">
+        <div class="id">04 · 现役</div>
+        <h3>黑板粉笔</h3>
+        <p class="oneliner">每一笔有先后，划掉的动作和写下的动作同等重要。</p>
+        <dl>
+          <dt>适合</dt><dd>要展示推导过程而不只是结论；要说出「这条是错的」；教学、讲解、复盘；中文字多</dd>
+          <dt>别用</dt><dd>需要精致成品感、需要精确数据、横屏画幅、环境里没有楷体</dd>
+        </dl>
+        <div class="acts">
+          <a class="primary" href="renderer/board.html">打开工作台</a>
+          <a href="docs/cases/04-黑板粉笔.md">读风格卡</a>
+        </div>
+        <details>
+          <summary>复制引导块</summary>
+<pre>视觉：教室黑板，墨绿板面 + 木质边框 + 底部粉笔槽。
+板面 #25332C→#1E2B25→#16211C 斜向渐变，四角径向压暗 30%。
+边框 52px，胡桃木色 #3B2A1E，带竖向木纹；槽里放粉笔和板擦。
+粉笔色：白 #EDEAE0（正文）、黄 #E8D48A（重点）、
+粉 #E89E9E（错误/划掉）、蓝 #9BC0DC（改写）、绿 #A9C89C（通路）。
+笔触：一条线不是实线，是沿弧长撒的短划痕拼成——
+段长 5–11px、间隔 1–3px、粗细和透明度都抖动。
+字：楷体（KaiTi / Kaiti SC），逐字写出，落笔下沉 3px 再归位。
+动作：先写、再划掉、旁边重写。划掉是红粉笔两道斜线。
+不要：blur 阴影、发光、圆角卡片、科技感点线网格。</pre>
+        </details>
+        <p class="meta">8 镜 · 32 秒 · 9:16 · 独立实验片</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section>
+  <h2>拿到风格之后：七步做完一条片</h2>
+  <p class="lead">顺序不能换。第二步决定第七步的长度。</p>
+  <ol class="steps">
+    <li><b>定边界</b> <span>— 画幅、帧率、总时长写死，后面所有数字都受它约束</span></li>
+    <li><b>写口播稿</b> <span>— 125 字 ÷ 30 秒 ≈ 4.2 字/秒，总时长在这一步就锁死了</span></li>
+    <li><b>切镜分镜</b> <span>— 按时间码切，时长吸附 4/6/8/10 秒档位</span></li>
+    <li><b>选美术方向</b> <span>— 就是上面三张卡，把约束抄成常量，不要边画边调</span></li>
+    <li><b>写渲染器 + 锁契约</b> <span>— 同一个 t 必出同一帧；规则写成会失败的断言</span></li>
+    <li><b>渲 900 帧</b> <span>— 不用开浏览器，约 5.5 分钟</span></li>
+    <li><b>合成并验收</b> <span>— ffmpeg 出 mp4，核时长必须是整 30.000 秒</span></li>
+  </ol>
+  <a class="link" href="docs/REPRODUCE.md">读可复现手册（每步都有命令和验收数字）</a>
+</section>
+
+<section>
+  <h2>仓库同时是这套流程的记忆</h2>
+  <ul class="notes">
+    <li><a class="link" href="PROCESS.md">PROCESS.md</a> — 为什么要这么排，最容易错在哪</li>
+    <li><a class="link" href="docs/verification.md">docs/verification.md</a> — 验过什么、结果，以及<strong>没验什么</strong></li>
+    <li><a class="link" href="docs/decisions/">docs/decisions/</a> — 每个关键决定一篇 ADR，含代价</li>
+    <li><a class="link" href="docs/cases/">docs/cases/</a> — 四个方向各一张卡，每张都写明<strong>已知缺陷</strong></li>
+    <li><a class="link" href="CHANGELOG.md">CHANGELOG.md</a> — 每次改动连踩的坑一起记，比如「浏览器能画中文不等于 Node 能画」</li>
+  </ul>
+  <p class="notes" style="margin-top:20px;padding-left:0">
+    规则没有停在文字上：<code>npm test</code> 会把它们变成会失败的断言，65 项。
+  </p>
+</section>
+
+<footer>
+  提示词与素材版权归各仓库作者，商用前看各自 LICENSE。星数为快照，会过期。
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "project": "30s-raii",
+  "title": "析构函数不是免费的午餐（30 秒竖屏知识口播）",
+  "format": {
+    "ratio": "9:16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "totalSec": 30,
+    "durationBuckets": [4, 6, 8, 10],
+    "safeArea": { "bottom": 0.18, "right": 0.12 }
+  },
+  "narration": {
+    "chars": 125,
+    "charsPerSec": 4.2,
+    "srt": "campaign/30s-raii/1_口播稿与SRT.md"
+  },
+  "artDirections": [
+    {
+      "id": "A",
+      "name": "深空蓝",
+      "status": "legacy",
+      "styleAnchor": "深空蓝渐变背景（#0B1220→#05070C），细青色透视网格地板，青色发光主体，左上 45° 冷白体积光",
+      "usedBy": ["S01", "S02", "S04", "S07"]
+    },
+    {
+      "id": "B",
+      "name": "制图台",
+      "status": "active",
+      "styleAnchor": "暖白纸底 #F4EFE3，5mm 细方格 + 25mm 粗方格，墨线 #1B1A17 制图，朱红 #BE3A2B 仅用于批注",
+      "usedBy": ["S03", "S05", "S06"]
+    }
+  ],
+  "shots": [
+    {
+      "id": "S01",
+      "index": 1,
+      "start": 0,
+      "end": 4,
+      "duration": 4,
+      "narrativeFunction": "钩子：制造疑问",
+      "shotSize": "特写",
+      "cameraAngle": "平视",
+      "motion": "缓慢推近（1.05×）",
+      "visual": "立方体悬浮自转，内部粒子缓慢流动",
+      "subtitle": "你以为析构函数只清内存？",
+      "producedBy": "ai",
+      "promptRef": "campaign/30s-raii/3_逐镜提示词.md#S01",
+      "firstFrame": "静止的青色立方体悬浮在网格地板上方，内部粒子凝固，无运动模糊"
+    },
+    {
+      "id": "S02",
+      "index": 2,
+      "start": 4,
+      "end": 8,
+      "duration": 4,
+      "narrativeFunction": "举证：交代场景",
+      "shotSize": "中景",
+      "cameraAngle": "平视",
+      "motion": "固定机位",
+      "visual": "代码卡片右滑入，三行发光短线依次亮起",
+      "subtitle": "开文件、读数据、抛异常",
+      "producedBy": "ai",
+      "promptRef": "campaign/30s-raii/3_逐镜提示词.md#S02"
+    },
+    {
+      "id": "S03",
+      "index": 3,
+      "start": 8,
+      "end": 12,
+      "duration": 4,
+      "narrativeFunction": "制造缺口",
+      "shotSize": "近景",
+      "cameraAngle": "平视微俯",
+      "motion": "轻微手持（呼吸感）",
+      "visual": "代码图纸上的红笔波浪线 + 校对章 + 手写批注「close 谁调？」",
+      "subtitle": "崩了之后，close 谁来调？",
+      "producedBy": "code",
+      "rendererShot": "S03",
+      "promptRef": "campaign/30s-raii/3_逐镜提示词.md#S03"
+    },
+    {
+      "id": "S04",
+      "index": 4,
+      "start": 12,
+      "end": 16,
+      "duration": 4,
+      "narrativeFunction": "反转",
+      "shotSize": "中景",
+      "cameraAngle": "平视",
+      "motion": "缓慢拉远",
+      "visual": "裂纹停住，确认标签浮现并连线到主体",
+      "subtitle": "没人写，但它一定会执行",
+      "producedBy": "ai",
+      "promptRef": "campaign/30s-raii/3_逐镜提示词.md#S04"
+    },
+    {
+      "id": "S05",
+      "index": 5,
+      "start": 16,
+      "end": 22,
+      "duration": 6,
+      "narrativeFunction": "机制：讲原理",
+      "shotSize": "中景转全景",
+      "cameraAngle": "平视",
+      "motion": "跟随下坠",
+      "visual": "纸盒穿过三层 SCOPE 图纸（每层盖章），落地散成纸屑与墨点",
+      "subtitle": "离开作用域，死前必调析构",
+      "producedBy": "code",
+      "rendererShot": "S05",
+      "promptRef": "campaign/30s-raii/3_逐镜提示词.md#S05",
+      "firstFrame": "纸盒停在顶层图纸上方，下方三层图纸清晰可见，无运动模糊"
+    },
+    {
+      "id": "S06",
+      "index": 6,
+      "start": 22,
+      "end": 26,
+      "duration": 4,
+      "narrativeFunction": "命名：给术语",
+      "shotSize": "全景",
+      "cameraAngle": "略俯",
+      "motion": "缓慢环绕 15°",
+      "visual": "纸屑重组成栈/堆关系图，中线箭头标 lifetime",
+      "subtitle": "把资源绑在对象生命周期上",
+      "producedBy": "code",
+      "rendererShot": "S06",
+      "promptRef": "campaign/30s-raii/3_逐镜提示词.md#S06"
+    },
+    {
+      "id": "S07",
+      "index": 7,
+      "start": 26,
+      "end": 30,
+      "duration": 4,
+      "narrativeFunction": "收尾：给结论",
+      "shotSize": "特写",
+      "cameraAngle": "平视",
+      "motion": "固定机位",
+      "visual": "结构收束成三层发光台阶（方案B：三张图纸叠成一摞，最上层盖红章）",
+      "subtitle": "所以 C++ 不需要 finally",
+      "producedBy": "ai",
+      "promptRef": "campaign/30s-raii/3_逐镜提示词.md#S07",
+      "firstFrame": "三层台阶已成形，微缩主体悬停在最上层上方约 40px 处"
+    }
+  ],
+  "acceptance": {
+    "checklist": "campaign/30s-raii/4_出片与验收清单.md",
+    "rules": [
+      "时间码必须无缝覆盖 0–30，不重叠不留空",
+      "每个镜头时长必须落在 durationBuckets 内",
+      "单条字幕不超过 16 字符（不含空格）",
+      "每 8 秒内至少一次视觉变化",
+      "前 3 秒必须完成一次信息冲击"
+    ]
+  }
+}

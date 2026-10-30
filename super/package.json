@@ -1,0 +1,16 @@
+{
+  "name": "super",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AI 视频提示词资产库（50 仓 / 24 节点）+ 30 秒竖屏成片工程 + 程序化渲染器，含契约测试与决策记录",
+  "keywords": ["ai-video", "prompt-engineering", "storyboard", "canvas", "9:16", "douyin"],
+  "scripts": {
+    "test": "node --test",
+    "dev": "node scripts/serve.mjs",
+    "verify": "node --test && node --check renderer/src/shot-renderer.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

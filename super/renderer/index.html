@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>制图台工作台 · 30 秒全片（七镜 · 9:16 · 1080×1920 · 30fps）</title>
+<style>
+  :root{
+    --paper:#EFE9DC; --panel:#FBF8F1; --ink:#1B1A17; --ink2:#5A5548;
+    --line:rgba(27,26,23,.16); --red:#BE3A2B; --blue:#2B4A6F;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font:14px/1.6 "Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    display:flex; flex-direction:column; min-height:100vh;
+    background-image:
+      linear-gradient(rgba(27,26,23,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27,26,23,.045) 1px, transparent 1px);
+    background-size:36px 36px, 36px 36px;
+  }
+  header{padding:18px 26px 12px; border-bottom:1px solid var(--line)}
+  h1{
+    font-family:"Songti SC","SimSun",serif; font-size:19px; margin:0 0 6px;
+    font-weight:600; letter-spacing:.04em;
+  }
+  .meta{color:var(--ink2); font-size:12px; font-family:ui-monospace,Consolas,monospace; letter-spacing:.02em}
+  main{flex:1; display:flex; gap:26px; padding:20px 26px 30px; align-items:flex-start}
+  .stage{display:flex; flex-direction:column; align-items:center; gap:12px}
+  .frame{
+    background:#F4EFE3; overflow:hidden;
+    box-shadow:0 14px 38px rgba(40,32,18,.22), 0 1px 0 rgba(255,255,255,.7) inset;
+    outline:1px solid rgba(27,26,23,.18);
+    line-height:0;
+  }
+  canvas{display:block; height:min(74vh,800px); width:auto; max-width:100%}
+  .side{flex:1; min-width:340px; max-width:540px; display:flex; flex-direction:column; gap:14px}
+  .card{
+    background:var(--panel); border:1px solid var(--line);
+    padding:14px 16px; box-shadow:0 1px 0 rgba(27,26,23,.04);
+  }
+  .card h2{
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink2); margin:0 0 10px; font-weight:700;
+  }
+  .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  button{
+    font:inherit; font-size:13px; padding:7px 13px; cursor:pointer;
+    border:1px solid var(--line); background:#FFFDF8; color:var(--ink); transition:.14s;
+  }
+  button:hover{border-color:rgba(27,26,23,.4)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button.active{background:var(--ink); border-color:var(--ink); color:#F8F4E8; font-weight:600}
+  button.ghost{background:transparent}
+  input[type=range]{width:100%; accent-color:#2B4A6F}
+  .time{
+    font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--ink2);
+    display:flex; justify-content:space-between; margin-top:6px;
+  }
+  label.chk{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink2); cursor:pointer}
+  pre{
+    margin:0; padding:10px 12px; background:#1B1A17; color:#E8E1D2;
+    font-family:ui-monospace,Consolas,monospace; font-size:11.5px; line-height:1.65;
+    overflow-x:auto;
+  }
+  .hint{font-size:12.5px; color:var(--ink2)}
+  .hint b{color:var(--ink)}
+  .bar{height:3px; background:rgba(27,26,23,.10); overflow:hidden; margin-top:9px}
+  .bar>i{display:block; height:100%; width:0; background:var(--red); transition:width .1s}
+  .tag{
+    font-family:ui-monospace,Consolas,monospace; font-size:11px; padding:2px 8px;
+    border:1px solid rgba(190,58,43,.45); color:var(--red); letter-spacing:.08em;
+  }
+  ol{margin:6px 0 0; padding-left:18px; color:var(--ink2); font-size:12.5px}
+  ol li{margin:4px 0}
+  .kv{display:grid; grid-template-columns:74px 1fr; gap:4px 10px; font-size:12.5px; color:var(--ink2)}
+  .kv b{color:var(--ink); font-weight:600}
+  .swatches{display:flex; gap:6px; margin-top:8px}
+  .sw{width:34px; height:20px; border:1px solid rgba(27,26,23,.25)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>制图台工作台 ·「制图台」— 30 秒竖屏知识片全七镜</h1>
+  <div class="meta">S01 钩子 · S02 举证 · S03 异常 · S04 反转 · S05 作用域 · S06 结构 · S07 收尾　|　1080×1920 · 9:16 · 30fps · 确定性逐帧　|　纸底 / 墨线 / 朱红批注</div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="frame"><canvas id="cv"></canvas></div>
+    <div class="row" style="justify-content:center">
+      <span class="tag" id="shotTag">S03</span>
+      <span class="meta" id="frameInfo">帧 0 / 0</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2>播放模式</h2>
+      <div class="row" style="margin-bottom:12px">
+        <button data-mode="full" class="active">全片 30s 连播</button>
+        <button data-mode="shot">单镜循环</button>
+      </div>
+      <h2>镜头 / 播放</h2>
+      <div class="row" id="shotBtns" style="margin-bottom:10px"></div>
+      <div class="row">
+        <button id="btnPlay" class="active">暂停</button>
+        <button id="btnLoop" class="ghost">循环：开</button>
+        <button id="btnRestart" class="ghost">回到开头</button>
+      </div>
+      <input type="range" id="scrub" min="0" max="4000" value="0" step="1" style="margin-top:12px" />
+      <div class="time"><span id="tCur">00:00.00</span><span id="tTot">00:04.00</span></div>
+    </div>
+
+    <div class="card">
+      <h2>美术方向 v2</h2>
+      <div class="kv">
+        <b>介质</b><span>暖白纸 + 5mm 方格 + 印刷颗粒</span>
+        <b>线条</b><span>墨线制图，2px 主框 / 1px 辅助</span>
+        <b>颜色</b><span>墨 #1B1A17 · 制图蓝 #2B4A6F · 朱红 #BE3A2B</span>
+        <b>语言</b><span>图框、图注、尺寸标注、引线、校对章、波浪红线</span>
+        <b>运动</b><span>擦除进入 / 打字机 / dash 描线 / 落章回弹</span>
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#F4EFE3"></div>
+        <div class="sw" style="background:#1B1A17"></div>
+        <div class="sw" style="background:#2B4A6F"></div>
+        <div class="sw" style="background:#BE3A2B"></div>
+        <div class="sw" style="background:#D9A521"></div>
+      </div>
+      <div class="hint" style="margin-top:9px">
+        v1 是「青蓝渐变 + 线框立方体 + 粒子」，信息流里没有辨识度。v2 的对比来自 <b>冷内容 × 暖印刷</b>：代码写在纸上，批注是人的动作。
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>显示 / 导出</h2>
+      <div class="row" style="margin-bottom:10px">
+        <label class="chk"><input type="checkbox" id="chkLabels" checked> 中文标注（栈 / 堆）</label>
+        <label class="chk"><input type="checkbox" id="chkSafe"> 安全区</label>
+        <label class="chk"><input type="checkbox" id="chkSub"> 字幕</label>
+      </div>
+      <div class="row">
+        <button id="btnRec">录制 30s 视频</button>
+        <button id="btnFrame" class="ghost">导出当前帧</button>
+        <button id="btnSeq" class="ghost">导出整镜序列</button>
+        <button id="btnFull" class="ghost">导出全片 900 帧</button>
+      </div>
+      <div class="hint" style="margin-top:9px;border-left:2px solid #BE3A2B;padding-left:8px">
+        「录制」是实时跑 30 秒，<b>期间请保持本页在前台</b>，切到别的标签会掉帧或超时。
+      </div>
+      <div class="bar"><i id="prog"></i></div>
+      <div class="hint" id="expHint" style="margin-top:8px">逐帧确定性渲染，同一时间点永远同一张图。</div>
+      <div class="hint" style="margin-top:10px">
+        <b>图快</b>就用「录制」，30 秒后直接得到 mp4（Chrome/Edge）。
+        <b>要控画质</b>就用序列导出，900 张图交给 ffmpeg（本机已装，`ffmpeg -version` 可自查）：
+      </div>
+      <pre style="margin-top:8px"># 单镜
+ffmpeg -framerate 30 -i S05_%04d.png -c:v libx264 \
+  -pix_fmt yuv420p -crf 16 s05.mp4
+
+# 全片 900 帧 → 30.000 秒
+ffmpeg -framerate 30 -i full_%04d.png -c:v libx264 \
+  -pix_fmt yuv420p -crf 16 raii-30s.mp4</pre>
+    </div>
+
+    <div class="card">
+      <h2>怎么用</h2>
+      <ol>
+        <li>默认<b>全片连播</b>，一打开就是完整的 30.000 秒。空格播放 / 暂停，← → 逐帧。</li>
+        <li><b>S01</b> 词条卡：把「只清内存」划掉，红笔写「真的？」——钩子靠否定常识。</li>
+        <li><b>S02</b> 三行代码逐行出现，右侧状态框逐个判定，第三行变红中断。</li>
+        <li><b>S03</b> 代码是<b>真的可读</b>的 C++，红笔划第 3 行、批注「close 谁调？」。</li>
+        <li><b>S04</b> 一张没填完的调用表，第 5 行自己长出 <b>compiler</b>，红圈圈住「没人写这一行」。</li>
+        <li><b>S05</b> 三张图纸标 SCOPE 01/02/03，穿层盖章，落地散成纸屑与墨点。</li>
+        <li><b>S06</b> 纸屑重组成栈/堆关系图，箭头标 lifetime。</li>
+        <li><b>S07</b> 左栏 try/finally 被划掉并盖叉章，右栏析构函数被框住打勾。</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<script src="src/shot-renderer.js"></script>
+<script>
+(function(){
+  const R = window.Renderer, S = R.state;
+  if (!R) { document.body.innerHTML = '<p style="padding:40px;color:#BE3A2B">渲染器没加载：检查 src/shot-renderer.js</p>'; return; }
+  const cv = document.getElementById('cv');
+  R.init(cv);
+
+  const $ = id => document.getElementById(id);
+  const shotBtns = $('shotBtns'), scrub = $('scrub');
+  const tCur = $('tCur'), tTot = $('tTot'), frameInfo = $('frameInfo');
+  const shotTag = $('shotTag'), btnPlay = $('btnPlay'), btnLoop = $('btnLoop');
+  const prog = $('prog'), expHint = $('expHint');
+
+  R.SHOTS.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.textContent = s.id + ' ' + s.name;
+    b.onclick = () => { R.select(i); syncAll(); };
+    shotBtns.appendChild(b);
+  });
+
+  const fmt = ms => {
+    const s = Math.floor(ms / 1000), f = Math.floor((ms % 1000) / 1000 * 30);
+    return '00:' + String(s).padStart(2,'0') + '.' + String(f).padStart(2,'0');
+  };
+  const isFull = () => S.mode === 'full';
+  const pos = () => isFull() ? S.time : S.t;
+
+  function syncAll(){
+    const full = isFull();
+    document.querySelectorAll('[data-mode]').forEach(b =>
+      b.classList.toggle('active', b.dataset.mode === (full ? 'full' : 'shot')));
+    if (full) {
+      scrub.max = R.TOTAL;
+      tTot.textContent = fmt(R.TOTAL);
+    } else {
+      const s = R.SHOTS[S.shotIdx];
+      scrub.max = s.dur;
+      tTot.textContent = fmt(s.dur);
+    }
+    [...shotBtns.children].forEach((b, i) =>
+      b.classList.toggle('active', !full && i === S.shotIdx));
+  }
+
+  document.querySelectorAll('[data-mode]').forEach(b => {
+    b.onclick = () => { R.setMode(b.dataset.mode); S.playing = false; syncAll(); };
+  });
+
+  R.onChange((st, shot) => {
+    const full = st.mode === 'full';
+    const cur = full ? st.time : st.t;
+    scrub.value = cur;
+    tCur.textContent = fmt(cur);
+    shotTag.textContent = shot.id;
+    if (full) {
+      const total = Math.round(R.TOTAL / 1000 * 30);
+      const f = Math.min(total, Math.round(cur / 1000 * 30));
+      frameInfo.textContent = '帧 ' + f + ' / ' + total + '（全片）';
+    } else {
+      const total = Math.round(shot.dur / 1000 * 30);
+      const f = Math.min(total, Math.round(cur / 1000 * 30));
+      frameInfo.textContent = '帧 ' + f + ' / ' + total;
+    }
+    btnPlay.textContent = st.playing ? '暂停' : '播放';
+    btnPlay.classList.toggle('active', st.playing);
+    document.querySelectorAll('[data-mode]').forEach(b =>
+      b.classList.toggle('active', b.dataset.mode === (full ? 'full' : 'shot')));
+    [...shotBtns.children].forEach((b, i) =>
+      b.classList.toggle('active', !full && i === S.shotIdx));
+  });
+
+  scrub.oninput = () => { S.playing = false; R.seek(+scrub.value); };
+  btnPlay.onclick = () => R.toggle();
+  btnLoop.onclick = () => { S.loop = !S.loop; btnLoop.textContent = '循环：' + (S.loop ? '开' : '关'); };
+  $('btnRestart').onclick = () => R.seek(0);
+  $('chkLabels').onchange = e => { S.labels = e.target.checked; R.seek(pos()); };
+  $('chkSafe').onchange = e => { S.safe = e.target.checked; R.seek(pos()); };
+  $('chkSub').onchange = e => { S.sub = e.target.checked; R.seek(pos()); };
+  $('btnFrame').onclick = () => R.exportFrame();
+
+  $('btnSeq').onclick = async () => {
+    const total = Math.round(R.SHOTS[S.shotIdx].dur / 1000 * 30);
+    expHint.textContent = '正在导出 ' + total + ' 帧，请允许浏览器连续下载…';
+    await R.exportSequence(120, (i, n) => {
+      prog.style.width = (i / n * 100) + '%';
+      expHint.textContent = '导出中 ' + i + ' / ' + n;
+    });
+    prog.style.width = '100%';
+    expHint.textContent = '完成：' + total + ' 帧。用下方单镜命令合成。';
+  };
+
+  $('btnRec').onclick = async () => {
+    const btn = $('btnRec');
+    btn.disabled = true;
+    S.playing = false;
+    prog.style.width = '0%';
+    expHint.textContent = '正在录制：0%（请保持本页在前台）';
+    try {
+      const r = await R.recordFull(v => {
+        prog.style.width = (v * 100) + '%';
+        expHint.textContent = '正在录制：' + Math.round(v * 100) + '%　（请保持本页在前台）';
+      });
+      prog.style.width = '100%';
+      expHint.textContent = '完成：raii-30s.' + r.ext + '　' + (r.size / 1048576).toFixed(1) + ' MB（' + r.mime + '）';
+    } catch (e) {
+      prog.style.width = '0%';
+      expHint.textContent = '录制失败：' + e.message;
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  $('btnFull').onclick = async () => {
+    if (!confirm('全片 900 帧，浏览器会连续弹出 900 个下载，耗时数分钟。继续？')) return;
+    expHint.textContent = '正在导出全片 900 帧…';
+    await R.exportFull(110, (i, n) => {
+      prog.style.width = (i / n * 100) + '%';
+      expHint.textContent = '导出中 ' + i + ' / ' + n;
+    });
+    prog.style.width = '100%';
+    expHint.textContent = '完成：900 帧（30.000s）。用下方全片命令合成。';
+  };
+
+  window.addEventListener('keydown', e => {
+    if (e.code === 'Space') { e.preventDefault(); R.toggle(); }
+    if (e.code === 'ArrowRight') { e.preventDefault(); S.playing = false; R.seek(pos() + 1000/30); }
+    if (e.code === 'ArrowLeft') { e.preventDefault(); S.playing = false; R.seek(pos() - 1000/30); }
+  });
+
+  // 默认全片：一打开就是完整的 30 秒
+  R.setMode('full');
+  syncAll();
+})();
+</script>
+</body>
+</html>

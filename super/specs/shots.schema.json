@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://git.h06.cn/514140019/super/specs/shots.schema.json",
+  "title": "分镜规格（shots.json）",
+  "description": "一条竖屏知识片的机器可读分镜。时间码是硬约束，画面是软约束。",
+  "type": "object",
+  "required": ["schemaVersion", "project", "format", "shots"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "project": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "format": {
+      "type": "object",
+      "required": ["ratio", "width", "height", "fps", "totalSec", "durationBuckets", "safeArea"],
+      "additionalProperties": false,
+      "properties": {
+        "ratio": { "type": "string", "enum": ["9:16", "16:9", "1:1", "4:5"] },
+        "width": { "type": "integer", "minimum": 240 },
+        "height": { "type": "integer", "minimum": 240 },
+        "fps": { "type": "integer", "minimum": 1, "maximum": 120 },
+        "totalSec": { "type": "number", "exclusiveMinimum": 0 },
+        "durationBuckets": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "number", "exclusiveMinimum": 0 },
+          "description": "平台单次生成支持的单镜时长档位"
+        },
+        "safeArea": {
+          "type": "object",
+          "required": ["bottom", "right"],
+          "additionalProperties": false,
+          "properties": {
+            "bottom": { "type": "number", "minimum": 0, "maximum": 0.5 },
+            "right": { "type": "number", "minimum": 0, "maximum": 0.5 }
+          }
+        }
+      }
+    },
+    "narration": {
+      "type": "object",
+      "properties": {
+        "chars": { "type": "integer", "minimum": 1 },
+        "charsPerSec": { "type": "number" },
+        "srt": { "type": "string" }
+      }
+    },
+    "artDirections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "status", "styleAnchor"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "legacy", "exploring"] },
+          "styleAnchor": { "type": "string" },
+          "usedBy": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "shots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "index", "start", "end", "duration", "narrativeFunction", "shotSize", "cameraAngle", "motion", "visual", "subtitle", "producedBy"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]{2}$" },
+          "index": { "type": "integer", "minimum": 1 },
+          "start": { "type": "number", "minimum": 0 },
+          "end": { "type": "number", "exclusiveMinimum": 0 },
+          "duration": { "type": "number", "exclusiveMinimum": 0 },
+          "narrativeFunction": { "type": "string" },
+          "shotSize": { "type": "string", "enum": ["特写", "近景", "中景", "中景转全景", "全景", "远景"] },
+          "cameraAngle": { "type": "string" },
+          "motion": { "type": "string" },
+          "visual": { "type": "string" },
+          "subtitle": { "type": "string", "maxLength": 14 },
+          "producedBy": { "type": "string", "enum": ["ai", "code"] },
+          "rendererShot": { "type": "string", "description": "producedBy=code 时，渲染器中的镜头 id" },
+          "promptRef": { "type": "string" },
+          "firstFrame": { "type": "string" }
+        }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "properties": {
+        "checklist": { "type": "string" },
+        "rules": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "name": "制图台 / Drafting Table",
+  "applies": "renderer/src/shot-renderer.js（v2），以及 AI 生成镜头的「方案 B 风格块」",
+  "why": "把美术方向写成数据，而不是散落在代码里的魔法数字。改风格时改这里 + 改代码常量，测试会检查两者是否漂移。",
+
+  "palette": {
+    "paperTop": "#F4EFE3",
+    "paperBot": "#E3D9C4",
+    "ink": "#1B1A17",
+    "ink2": "#4A463C",
+    "blue": "#2B4A6F",
+    "red": "#BE3A2B",
+    "yellow": "#D9A521"
+  },
+
+  "paletteRoles": {
+    "paperTop/paperBot": "纸底渐变，唯一的大面积颜色",
+    "ink": "所有线条与文字主体，禁止用纯黑 #000",
+    "blue": "制图辅助线与尺寸标注",
+    "red": "批注、校对章、波浪线；面积上限见 constraints.accentMaxArea",
+    "yellow": "保留位（高亮笔），当前未使用"
+  },
+
+  "grid": {
+    "fine": { "step": 36, "alpha": 0.045, "width": 1, "note": "≈5mm 方格在 1080 宽下的近似" },
+    "coarse": { "step": 180, "alpha": 0.10, "width": 1.4, "note": "≈25mm 粗格" }
+  },
+
+  "strokes": {
+    "frameOuter": 2.5,
+    "frameInner": 1,
+    "rule": 1,
+    "dimension": 1.2,
+    "annotation": 3,
+    "note": "粗细必须有层级：主框 > 内框 > 辅助线。全部一样粗就会糊成一片。"
+  },
+
+  "typography": {
+    "display": { "family": "\"Songti SC\",\"SimSun\",\"Noto Serif SC\",serif", "size": 52, "weight": 600, "use": "中文大字（栈/堆）" },
+    "code": { "family": "ui-monospace,Consolas,\"Courier New\",monospace", "size": 25, "use": "真实代码行" },
+    "label": { "family": "\"Microsoft YaHei\",\"PingFang SC\",sans-serif", "size": 17, "use": "批注与说明" },
+    "meta": { "family": "ui-monospace,Consolas,monospace", "size": 13, "use": "图注、单位、时间码" },
+    "rules": [
+      "六级以内：52 / 25 / 20 / 17 / 13 / 11",
+      "中文标题用衬线（宋），代码与数值用等宽，其余用无衬线",
+      "画布没有 letter-spacing，标题需要字距时逐字绘制（tracked 函数）"
+    ]
+  },
+
+  "layers": [
+    { "order": 1, "name": "纸底", "detail": "渐变 #F4EFE3→#E3D9C4 + 不均匀受光" },
+    { "order": 2, "name": "方格", "detail": "36px 细格 0.045α / 180px 粗格 0.10α" },
+    { "order": 3, "name": "图框与图注", "detail": "2.5px 主框 / 1px 内框 / CODE-01 / FIG.S03" },
+    { "order": 4, "name": "内容层", "detail": "真实代码 / 纸盒 / 结构图" },
+    { "order": 5, "name": "批注层", "detail": "朱红 #BE3A2B，全片面积 <3%" },
+    { "order": 6, "name": "颗粒", "detail": "160px 噪声 · 0.055α · multiply" },
+    { "order": 7, "name": "暗角", "detail": "radial 0.22α，收住四周" }
+  ],
+
+  "motion": {
+    "easings": {
+      "wipeIn": "easeOutExpo, 380ms — 擦除进入（图纸出现）",
+      "typewriter": "线性 + 190ms stagger — 代码逐行打出",
+      "drawLine": "easeOut — dash 描线 / 波浪线生长",
+      "stamp": "backOut — 落章回弹，全片唯一允许回弹的地方",
+      "fall": "t² 自由落体，4000ms 落地",
+      "ripple": "easeOut — 穿层纸条的波纹"
+    },
+    "hitImpulse": { "pixels": 1.4, "durationMs": 250, "use": "落章瞬间的画面震动" },
+    "rules": [
+      "同一个镜头里只允许一种主缓动，其余跟随",
+      "入场动效不超过 400ms，超过就显慢",
+      "回弹只给有物理性的动作（盖章、落物），其余一律 easeOut"
+    ]
+  },
+
+  "constraints": {
+    "accentMaxArea": 0.03,
+    "minStroke": 1,
+    "safeAreaBottom": 0.18,
+    "safeAreaRight": 0.12,
+    "noTextInAiShots": true,
+    "note": "AI 生成镜头的画面里不允许出现可读文字（会乱码），文字一律后期叠；代码渲染镜头不受此限，因为矢量文字是确定的。"
+  },
+
+  "rendererContract": {
+    "canvas": { "width": 1080, "height": 1920 },
+    "fps": 30,
+    "determinism": "画面完全由 t 决定；随机数使用 mulberry32 固定种子；同一 t 必须产出同一帧",
+    "seeds": { "grain": 20261028, "scraps-s05": 771, "ink-s05": 918, "scraps-s06": 4321, "heap-dots": 88 }
+  }
+}

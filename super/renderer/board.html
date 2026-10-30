@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>板书工作台 · v4「黑板粉笔」— 8 镜（9:16 · 1080×1920 · 30fps）</title>
+<style>
+  :root{
+    --bg:#141A17; --panel:#1C2621; --panel2:#233029;
+    --line:rgba(237,234,224,.13); --line2:rgba(237,234,224,.30);
+    --chalk:#EDEAE0; --yellow:#E8D48A; --pink:#E89E9E;
+    --blue:#9BC0DC; --green:#A9C89C;
+    --ink:#D8D5C9; --ink2:#8E9A91; --ink3:#5A6A61;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:14px/1.65 "KaiTi","Kaiti SC","Microsoft YaHei",serif;
+    display:flex; flex-direction:column; min-height:100vh;
+  }
+  header{padding:16px 26px 13px; border-bottom:1px solid var(--line)}
+  h1{
+    font-size:19px; margin:0 0 5px; font-weight:400; letter-spacing:.06em; color:var(--chalk);
+  }
+  .meta{color:var(--ink2); font-size:12px; font-family:ui-monospace,Consolas,monospace}
+  main{flex:1; display:flex; gap:24px; padding:20px 26px 30px; align-items:flex-start}
+  .stage{display:flex; flex-direction:column; align-items:center; gap:10px}
+  .frame{
+    background:#0C110E; overflow:hidden; line-height:0;
+    box-shadow:0 0 0 1px rgba(237,234,224,.10), 0 20px 60px rgba(0,0,0,.8);
+  }
+  canvas{display:block; height:min(76vh,820px); width:auto; max-width:100%}
+  .side{flex:1; min-width:340px; max-width:520px; display:flex; flex-direction:column; gap:12px}
+  .card{background:var(--panel); border:1px solid var(--line); padding:13px 15px}
+  .card h2{
+    font-size:11px; letter-spacing:.16em; color:var(--ink2); margin:0 0 10px;
+    font-weight:400; font-family:ui-monospace,Consolas,monospace;
+  }
+  .row{display:flex; gap:7px; flex-wrap:wrap; align-items:center}
+  button{
+    font:inherit; font-size:13px; padding:5px 11px; cursor:pointer;
+    border:1px solid var(--line); background:var(--panel2); color:var(--ink);
+    transition:.14s;
+  }
+  button:hover{border-color:var(--line2); color:var(--chalk)}
+  button.active{background:rgba(232,212,138,.15); border-color:var(--yellow); color:var(--yellow)}
+  button.ghost{background:transparent}
+  input[type=range]{width:100%; accent-color:#E8D48A}
+  .time{
+    font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--ink2);
+    display:flex; justify-content:space-between; margin-top:6px;
+  }
+  label.chk{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink2); cursor:pointer}
+  .hint{font-size:13px; color:var(--ink2); line-height:1.7}
+  .hint b{color:var(--ink)}
+  .bar{height:2px; background:rgba(237,234,224,.10); overflow:hidden; margin-top:9px}
+  .bar>i{display:block; height:100%; width:0; background:var(--yellow); transition:width .1s}
+  .tag{
+    font-family:ui-monospace,Consolas,monospace; font-size:11px; padding:2px 8px;
+    border:1px solid rgba(232,212,138,.45); color:var(--yellow); letter-spacing:.08em;
+  }
+  ol{margin:6px 0 0; padding-left:18px; color:var(--ink2); font-size:13px}
+  ol li{margin:5px 0}
+  ol b{color:var(--chalk); font-weight:400}
+  .swatches{display:flex; gap:5px; margin-top:10px}
+  .sw{width:30px; height:18px; border:1px solid rgba(255,255,255,.14)}
+  .kv{display:grid; grid-template-columns:62px 1fr; gap:4px 10px; font-size:13px; color:var(--ink2)}
+  .kv b{color:var(--ink); font-weight:400}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>板书工作台 · 资源去哪了</h1>
+  <div class="meta">v4「黑板粉笔」· 8 镜 · 1080×1920 · 9:16 · 30fps · 确定性逐帧 · 每一笔有先后</div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="frame"><canvas id="cv"></canvas></div>
+    <div class="row" style="justify-content:center">
+      <span class="tag" id="shotTag">B01</span>
+      <span class="meta" id="frameInfo">帧 0 / 0</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2>镜头 / 播放</h2>
+      <div class="row" id="shotBtns" style="margin-bottom:9px"></div>
+      <div class="row">
+        <button id="btnPlay" class="active">暂停</button>
+        <button id="btnLoop" class="ghost">循环：开</button>
+        <button id="btnRestart" class="ghost">回到开头</button>
+      </div>
+      <input type="range" id="scrub" min="0" max="4000" value="0" step="1" style="margin-top:11px" />
+      <div class="time"><span id="tCur">00:00.00</span><span id="tTot">00:04.00</span></div>
+    </div>
+
+    <div class="card">
+      <h2>这一版为什么换介质</h2>
+      <div class="kv">
+        <b>v1</b><span>深空蓝：发光立方体，讲"存在"</span>
+        <b>v2</b><span>制图台：纸墨朱批，讲"版面"</span>
+        <b>v3</b><span>示波器：两条曲线，讲"时间对比"</span>
+        <b>v4</b><span>黑板粉笔：板书，讲"推导过程"</span>
+      </div>
+      <div class="hint" style="margin-top:10px">
+        前三种介质都是<b>印好了就不动</b>——纸上的字、屏幕上的波形，画上去就只是被观看的对象。粉笔不是：先写一句，看着不对，<b>划掉</b>，在旁边重写。每一笔有先后，划掉的动作和写下的动作同等重要。
+      </div>
+      <div class="hint" style="margin-top:8px">
+        RAII 恰好是这样一条推导链，所以这一版的动词是<b>写</b>和<b>划</b>，不是"排"和"测"。
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#1E2B25"></div>
+        <div class="sw" style="background:#EDEAE0"></div>
+        <div class="sw" style="background:#E8D48A"></div>
+        <div class="sw" style="background:#E89E9E"></div>
+        <div class="sw" style="background:#9BC0DC"></div>
+        <div class="sw" style="background:#A9C89C"></div>
+        <div class="sw" style="background:#3B2A1E"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>显示 / 导出</h2>
+      <div class="row" style="margin-bottom:9px">
+        <label class="chk"><input type="checkbox" id="chkSafe"> 安全区</label>
+        <label class="chk"><input type="checkbox" id="chkMark"> 帧号</label>
+      </div>
+      <div class="row">
+        <button id="btnFrame">导出当前帧</button>
+        <button id="btnSeq" class="ghost">导出整镜序列</button>
+      </div>
+      <div class="bar"><i id="prog"></i></div>
+      <div class="hint" id="expHint" style="margin-top:8px">逐帧确定性渲染，同一时间点永远同一张图。导出时会自动关掉帧号。</div>
+    </div>
+
+    <div class="card">
+      <h2>八镜在讲什么</h2>
+      <ol>
+        <li><b>B01 擦板</b> — 两趟擦过来，旧板书没了。上课前先清场。</li>
+        <li><b>B02 起笔</b> — 写下标题，画一条时间轴：这头"拿到"，那头"？"。</li>
+        <li><b>B03 写第一行</b> — <code>fopen</code> 一行，箭头指向堆上的资源。</li>
+        <li><b>B04 出事</b> — 通路中间打叉，<code>throw</code>。资源还在，手撤了。</li>
+        <li><b>B05 追问</b> — "谁负责"，三个候选，最后一个被红圈圈住：没有人。</li>
+        <li><b>B06 划掉重写</b> — 红笔划掉那行，蓝笔写栈对象，大括号包住作用域。</li>
+        <li><b>B07 资源回家</b> — 绿线从"退出即调用"弯回方块，方块被擦掉。</li>
+        <li><b>B08 落款</b> — "离开，就释放"。黑板擦干净了再写最后一句。</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<script src="src/board-renderer.js"></script>
+<script>
+(function(){
+  const B = window.Board;
+  if (!B) { document.body.innerHTML = '<p style="padding:40px;color:#E89E9E">渲染器没加载：检查 src/board-renderer.js</p>'; return; }
+  const cv = document.getElementById('cv');
+  B.init(cv);
+
+  const $ = id => document.getElementById(id);
+  const shotBtns = $('shotBtns'), scrub = $('scrub');
+  const tCur = $('tCur'), tTot = $('tTot'), frameInfo = $('frameInfo');
+  const shotTag = $('shotTag'), btnPlay = $('btnPlay'), btnLoop = $('btnLoop');
+  const prog = $('prog'), expHint = $('expHint');
+
+  B.SHOTS.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.textContent = s.id + ' ' + s.name;
+    b.onclick = () => { B.select(i); syncShot(); };
+    shotBtns.appendChild(b);
+  });
+
+  const fmt = ms => {
+    const s = Math.floor(ms / 1000), f = Math.floor((ms % 1000) / 1000 * 30);
+    return '00:' + String(s).padStart(2,'0') + '.' + String(f).padStart(2,'0');
+  };
+
+  function syncShot(){
+    const s = B.SHOTS[B.state.shotIdx];
+    scrub.max = s.dur;
+    tTot.textContent = fmt(s.dur);
+    shotTag.textContent = s.id;
+    [...shotBtns.children].forEach((b, i) => b.classList.toggle('active', i === B.state.shotIdx));
+  }
+
+  B.onChange((st, shot) => {
+    scrub.value = st.t;
+    tCur.textContent = fmt(st.t);
+    const total = Math.round(shot.dur / 1000 * 30);
+    const cur = Math.min(total, Math.round(st.t / 1000 * 30));
+    frameInfo.textContent = '帧 ' + cur + ' / ' + total;
+    btnPlay.textContent = st.playing ? '暂停' : '播放';
+    btnPlay.classList.toggle('active', st.playing);
+  });
+
+  scrub.oninput = () => { B.state.playing = false; B.seek(+scrub.value); };
+  btnPlay.onclick = () => B.toggle();
+  btnLoop.onclick = () => { B.state.loop = !B.state.loop; btnLoop.textContent = '循环：' + (B.state.loop ? '开' : '关'); };
+  $('btnRestart').onclick = () => B.seek(0);
+  $('chkSafe').onchange = e => { B.state.safe = e.target.checked; B.seek(B.state.t); };
+  $('chkMark').onchange = e => { B.state.watermark = e.target.checked; B.seek(B.state.t); };
+  $('btnFrame').onclick = () => B.exportFrame();
+  $('btnSeq').onclick = async () => {
+    const total = Math.round(B.SHOTS[B.state.shotIdx].dur / 1000 * B.FPS);
+    expHint.textContent = '正在导出 ' + total + ' 帧，请允许浏览器连续下载…';
+    await B.exportSequence(1000 / B.FPS, (i, n) => {
+      prog.style.width = (i / n * 100) + '%';
+      expHint.textContent = '导出中 ' + i + ' / ' + n;
+    });
+    prog.style.width = '100%';
+    expHint.textContent = '完成：' + total + ' 帧。';
+  };
+
+  window.addEventListener('keydown', e => {
+    if (e.code === 'Space') { e.preventDefault(); B.toggle(); }
+    if (e.code === 'ArrowRight') { e.preventDefault(); B.state.playing = false; B.seek(B.state.t + 1000/30); }
+    if (e.code === 'ArrowLeft') { e.preventDefault(); B.state.playing = false; B.seek(B.state.t - 1000/30); }
+  });
+
+  syncShot();
+})();
+</script>
+</body>
+</html>

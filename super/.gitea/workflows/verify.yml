@@ -1,0 +1,23 @@
+name: verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'   # 测试环境用了 import.meta.dirname（20.11+）与 node --test，跟本地对齐
+      - name: 语法检查
+        run: |
+          node --check renderer/src/shot-renderer.js
+          node --check renderer/src/scope-renderer.js
+          node --check renderer/src/board-renderer.js
+          node --check scripts/render-offline.mjs
+          node --check scripts/serve.mjs
+      - name: 契约测试
+        run: node --test
