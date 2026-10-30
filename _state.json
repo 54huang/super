@@ -1,14 +1,14 @@
 {
-  "syncedAt": "2026-10-30T15:42:31.793Z",
+  "syncedAt": "2026-10-30T15:56:22.780Z",
   "sources": {
     "super": {
-      "head": "94e146b",
+      "head": "f67965e",
       "branch": "main",
       "subject": "第五种风格「暖摊灯箱」：换的不是表面，是光的方向",
       "files": 100
     },
     "super-sister": {
-      "head": "f7ad1cc",
+      "head": "40d58e6",
       "branch": "main",
       "subject": "远端改名：super-sister → super-visual-sfx-library",
       "files": 25
