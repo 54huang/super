@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-30T15:16:38.983Z",
+  "syncedAt": "2026-10-30T15:42:31.793Z",
   "sources": {
     "super": {
       "head": "94e146b",
@@ -8,9 +8,9 @@
       "files": 100
     },
     "super-sister": {
-      "head": "ffd096e",
+      "head": "f7ad1cc",
       "branch": "main",
-      "subject": "补远端地址与两仓合并数：4 处应为 3 处",
+      "subject": "远端改名：super-sister → super-visual-sfx-library",
       "files": 25
     }
   }
