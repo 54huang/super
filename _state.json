@@ -1,10 +1,10 @@
 {
-  "syncedAt": "2026-11-01T13:21:27.690Z",
+  "syncedAt": "2026-11-01T13:21:51.367Z",
   "sources": {
     "super": {
-      "head": "0d40d9e",
+      "head": "90b795d",
       "branch": "main",
-      "subject": "@ 三种实验介质改成五镜 HTML 工作台（07–09）",
+      "subject": "三种实验介质改成五镜 HTML 工作台（07–09）",
       "files": 122
     },
     "super-sister": {
