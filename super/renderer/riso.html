@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>丝网印刷工作台 · 07「错版」— 5 镜（9:16 · 1080×1920 · 30fps）</title>
+<link rel="stylesheet" href="src/exp-shell.css" />
+<style>
+  :root{
+    --accent:#FF4E7A;
+    --accent-bg:rgba(255,78,122,.14);
+    --accent-line:rgba(255,78,122,.48);
+    --frame:#2A241C;
+    --bg:#191512;
+    --panel:#221C17;
+    --panel2:#2B231C;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>丝网印刷工作台 · 交付台账 / 2027 Q1</h1>
+  <div class="meta">07 · 5 镜 · 23500ms · 1080×1920 · 9:16 · 30fps · 确定性逐帧 · 两块版，没对准</div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="frame"><canvas id="cv"></canvas></div>
+    <div class="row" style="justify-content:center">
+      <span class="tag" id="shotTag">R01</span>
+      <span class="meta" id="frameInfo">帧 0 / 0</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2>镜头 / 播放</h2>
+      <div class="row" id="shotBtns" style="margin-bottom:9px"></div>
+      <div class="row">
+        <button id="btnPlay" class="active">暂停</button>
+        <button id="btnLoop" class="ghost">循环：开</button>
+        <button id="btnRestart" class="ghost">回到开头</button>
+      </div>
+      <input type="range" id="scrub" min="0" max="5000" value="0" step="1" style="margin-top:11px" />
+      <div class="time"><span id="tCur">00:00.00</span><span id="tTot">00:05.00</span></div>
+    </div>
+
+    <div class="card">
+      <h2>为什么是五镜，不是一张图</h2>
+      <div class="kv">
+        <b>版一</b><span>青 <code>#1E6F8A</code> — 标题、42 项、三行台账、进度条，所有"说好的一版"</span>
+        <b>版二</b><span>荧光粉 <code>#FF4E7A</code> — 标题的第二遍、粉块、条框、未完成段的网点</span>
+        <b>第三色</b><span>深靛 <code>#1E2242</code> — 不是油墨，是青 × 粉相乘的结果</span>
+      </div>
+      <div class="hint" style="margin-top:10px">
+        单帧能证明"两块色版套印一眼认出来"，证明不了<b>错版</b>——错版是个动词。一张静止的图永远停在"已经歪好了"，看的人分不出是印歪了，还是本来就这么排的。
+      </div>
+      <div class="hint" style="margin-top:8px">
+        所以 R02 里偏移量从 <code>46px</code> 收到 <code>5px</code>：先大后小，看得见它落下来，而且<b>收不回去</b>。这五镜不是为了讲一个故事，是为了让错版这个动作发生。
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#F1EBDE"></div>
+        <div class="sw" style="background:#1E6F8A"></div>
+        <div class="sw" style="background:#FF4E7A"></div>
+        <div class="sw" style="background:#1E2242"></div>
+        <div class="sw" style="background:#D8CCB6"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>显示 / 导出</h2>
+      <div class="row" style="margin-bottom:9px">
+        <label class="chk"><input type="checkbox" id="chkSafe"> 安全区</label>
+        <label class="chk"><input type="checkbox" id="chkMark"> 帧号</label>
+      </div>
+      <div class="row">
+        <button id="btnFrame">导出当前帧</button>
+        <button id="btnSeq" class="ghost">导出整镜序列</button>
+      </div>
+      <div class="bar"><i id="prog"></i></div>
+      <div class="hint" id="expHint" style="margin-top:8px">逐帧确定性渲染，同一时间点永远同一张图。导出时会自动关掉帧号。</div>
+    </div>
+
+    <div class="card">
+      <h2>五镜在讲什么</h2>
+      <ol>
+        <li><b>R01 落版一</b> — 只有一块青版。标题、42 项、三行台账依次印上来，对得准、干净。</li>
+        <li><b>R02 压版二</b> — 粉版从 46px 收到 5px 压上来。错版在这一镜发生，此后一直存在。</li>
+        <li><b>R03 三行差一点</b> — 第三行「上线 9」被一块粉替换成「其中 3 项延后到下季度」。是<b>替换</b>，不是遮挡——multiply 盖不住东西。</li>
+        <li><b>R04 网点进度</b> — 青版网点走到 78%，剩下的 22% 只有粉版网点。网点说密度，不说质感。</li>
+        <li><b>R05 结论</b> — 「印出来的，和说好的，差一点。」落款是色标条：<code>2 INKS · 3 COLORS · MISREG 5px</code>。</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<script src="src/exp-engine.js"></script>
+<script src="src/riso-renderer.js"></script>
+<script>
+(function () {
+  if (!window.ExpKit || !window.Exp) {
+    document.querySelector('.side').innerHTML =
+      '<div class="card">渲染器没加载。要两个文件：<code>renderer/src/exp-engine.js</code> 和 <code>renderer/src/riso-renderer.js</code>。</div>';
+    return;
+  }
+  ExpKit.boot(document.getElementById('cv'), window.Exp);
+})();
+</script>
+</body>
+</html>

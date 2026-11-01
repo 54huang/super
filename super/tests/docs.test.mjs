@@ -149,3 +149,43 @@ test('文档里反引号写出的文件路径真实存在', () => {
   }
   assert.deepEqual(dead, [], `文档里有过期路径：\n${dead.join('\n')}`);
 });
+
+// 工作台外壳是最容易"看起来没坏"的一类文件：脚本路径写错、按钮 id 拼错，
+// 页面照样打开、画布照样黑着，只是按什么都没反应。
+// 引擎的写法是"元素不存在就跳过"（这样它能在 node 里跑），代价是错配完全静默。
+// 所以这里替人检查一遍：引用的文件在不在、引擎要的每个 id 在不在。
+test('每个渲染器外壳的脚本、样式和控件都齐全', () => {
+  const dir = path.join(ROOT, 'renderer');
+  const pages = fs.readdirSync(dir).filter(f => f.endsWith('.html'));
+  assert.ok(pages.length >= 5, `renderer 下只有 ${pages.length} 个页面`);
+
+  // 引擎会去找的 id。少一个不会报错，只会有一个控件不动。
+  const NEEDED = [
+    'cv', 'shotBtns', 'scrub', 'tCur', 'tTot',
+    'shotTag', 'frameInfo', 'btnPlay', 'chkSafe', 'chkMark',
+    'btnFrame', 'btnSeq', 'prog', 'expHint'
+  ];
+
+  for (const page of pages) {
+    const html = fs.readFileSync(path.join(dir, page), 'utf8');
+
+    for (const m of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
+      const u = m[1];
+      if (/^(https?:|data:|#)/.test(u)) continue;
+      assert.ok(
+        fs.existsSync(path.join(dir, u)),
+        `${page} 引用了不存在的文件 ${u}`
+      );
+    }
+
+    // 只对实验工作台查 id：board/scope/index 是更早的写法，控件各不相同
+    if (!/exp-engine\.js/.test(html)) continue;
+    for (const id of NEEDED) {
+      assert.ok(
+        new RegExp('id="' + id + '"').test(html),
+        `${page} 缺少控件 #${id}，引擎会静默跳过它`
+      );
+    }
+    assert.match(html, /ExpKit\.boot\(/, `${page} 没有启动引擎`);
+  }
+});

@@ -1,0 +1,141 @@
+/* 风格实验工作台的共用外壳样式（07 丝网 / 08 电子墨水 / 09 金属铭牌）
+ *
+ * 为什么抽出来：三个工作台的差别是**介质**，不是布局。
+ * 卡片放哪、按钮多大、时间码对齐到哪一格，这些是三份一模一样的东西；
+ * 分开写三遍，改一次间距要改三处，第二次一定漏一处。
+ * 所以布局写一遍，颜色交给每个页面自己的 --vars。
+ *
+ * 换肤靠变量，不靠选择器覆盖：
+ *   暗底介质（07 纸、09 金属）用默认值；
+ *   08 电子墨水屏自己在页面里把 --bg/--panel 改成浅灰——
+ *   一块"没有背光"的屏，配深色 UI 是自相矛盾的。
+ */
+
+:root {
+  /* 版面 */
+  --pad: 26px;
+  --gap: 12px;
+
+  /* 颜色：默认暗底，浅底介质自行覆盖 */
+  --bg: #1A1A1C;
+  --panel: #232326;
+  --panel2: #2B2B2F;
+  --line: rgba(240, 240, 240, .13);
+  --line2: rgba(240, 240, 240, .30);
+  --ink: #D8D8D4;
+  --ink2: #93938C;
+  --ink3: #5E5E58;
+  --accent: #E8D48A;
+  --accent-bg: rgba(232, 212, 138, .15);
+  --accent-line: rgba(232, 212, 138, .45);
+  --frame: #0C0C0D;
+  --mono: ui-monospace, Consolas, "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.65 "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+header { padding: 16px var(--pad) 13px; border-bottom: 1px solid var(--line); }
+h1 {
+  font-size: 19px; margin: 0 0 5px; font-weight: 400;
+  letter-spacing: .05em; color: var(--ink);
+}
+.meta { color: var(--ink2); font-size: 12px; font-family: var(--mono); }
+
+main {
+  flex: 1; display: flex; gap: 24px;
+  padding: 20px var(--pad) 30px; align-items: flex-start;
+}
+.stage { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.frame {
+  background: var(--frame); overflow: hidden; line-height: 0;
+  box-shadow: 0 0 0 1px var(--line), 0 20px 60px rgba(0, 0, 0, .45);
+}
+canvas { display: block; height: min(76vh, 820px); width: auto; max-width: 100%; }
+
+.side {
+  flex: 1; min-width: 340px; max-width: 520px;
+  display: flex; flex-direction: column; gap: var(--gap);
+}
+.card { background: var(--panel); border: 1px solid var(--line); padding: 13px 15px; }
+.card h2 {
+  font-size: 11px; letter-spacing: .16em; color: var(--ink2);
+  margin: 0 0 10px; font-weight: 400; font-family: var(--mono);
+}
+
+.row { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+button {
+  font: inherit; font-size: 13px; padding: 5px 11px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--panel2); color: var(--ink);
+  transition: .14s;
+}
+button:hover { border-color: var(--line2); color: var(--ink); }
+button.active {
+  background: var(--accent-bg); border-color: var(--accent); color: var(--accent);
+}
+button.ghost { background: transparent; }
+
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.time {
+  font-family: var(--mono); font-size: 12px; color: var(--ink2);
+  display: flex; justify-content: space-between; margin-top: 6px;
+}
+label.chk {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--ink2); cursor: pointer;
+}
+.hint { font-size: 13px; color: var(--ink2); line-height: 1.7; }
+.hint b { color: var(--ink); font-weight: 600; }
+.hint code {
+  font: 12px var(--mono); background: var(--panel2);
+  padding: 1px 5px; border: 1px solid var(--line);
+}
+
+.bar { height: 2px; background: var(--line); overflow: hidden; margin-top: 9px; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .1s; }
+
+.tag {
+  font-family: var(--mono); font-size: 11px; padding: 2px 8px;
+  border: 1px solid var(--accent-line); color: var(--accent); letter-spacing: .08em;
+}
+
+ol { margin: 6px 0 0; padding-left: 18px; color: var(--ink2); font-size: 13px; }
+ol li { margin: 5px 0; }
+ol b { color: var(--ink); font-weight: 600; }
+ol code { font: 12px var(--mono); }
+
+.swatches { display: flex; gap: 5px; margin-top: 10px; }
+.sw { width: 30px; height: 18px; border: 1px solid var(--line); }
+
+.kv { display: grid; grid-template-columns: 58px 1fr; gap: 4px 10px; font-size: 13px; color: var(--ink2); }
+.kv b { color: var(--ink); font-weight: 400; }
+
+/* 08 电子墨水屏：整页浅灰。这层覆盖只改色，不动任何一条布局规则。 */
+body.light {
+  --bg: #C9C7BE;
+  --panel: #DEDCD3;
+  --panel2: #CFCDC4;
+  --line: rgba(27, 27, 24, .22);
+  --line2: rgba(27, 27, 24, .45);
+  --ink: #1B1B18;
+  --ink2: #5E5C55;
+  --ink3: #8A887F;
+  --accent: #1B1B18;
+  --accent-bg: rgba(27, 27, 24, .10);
+  --accent-line: rgba(27, 27, 24, .55);
+  --frame: #B9B7AE;
+}
+body.light .frame { box-shadow: 0 0 0 1px rgba(27, 27, 24, .35), 0 14px 40px rgba(27, 27, 24, .22); }
+body.light button:hover { background: var(--panel); }
+body.light button.active { color: var(--ink); }
+body.light .tag { color: var(--ink); }

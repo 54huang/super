@@ -1,11 +1,11 @@
 {
-  "syncedAt": "2026-11-01T12:45:13.566Z",
+  "syncedAt": "2026-11-01T13:21:27.690Z",
   "sources": {
     "super": {
-      "head": "f1f12c0",
+      "head": "0d40d9e",
       "branch": "main",
-      "subject": "三张风格实验卡（07–09），素材节点从 24 扩到 29",
-      "files": 115
+      "subject": "@ 三种实验介质改成五镜 HTML 工作台（07–09）",
+      "files": 122
     },
     "super-sister": {
       "head": "40d58e6",

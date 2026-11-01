@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>金属铭牌工作台 · 09「终态」— 5 镜（9:16 · 1080×1920 · 30fps）</title>
+<link rel="stylesheet" href="src/exp-shell.css" />
+<style>
+  :root{
+    --accent:#C9A227;
+    --accent-bg:rgba(201,162,39,.15);
+    --accent-line:rgba(201,162,39,.50);
+    --bg:#191C1F;
+    --panel:#212529;
+    --panel2:#292E33;
+    --frame:#14171A;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>金属铭牌工作台 · 好礼乐 年度供货资质</h1>
+  <div class="meta">09 · 5 镜 · 22000ms · 1080×1920 · 9:16 · 30fps · 确定性逐帧 · 刻上去就改不动</div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="frame"><canvas id="cv"></canvas></div>
+    <div class="row" style="justify-content:center">
+      <span class="tag" id="shotTag">M01</span>
+      <span class="meta" id="frameInfo">帧 0 / 0</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2>镜头 / 播放</h2>
+      <div class="row" id="shotBtns" style="margin-bottom:9px"></div>
+      <div class="row">
+        <button id="btnPlay" class="active">暂停</button>
+        <button id="btnLoop" class="ghost">循环：开</button>
+        <button id="btnRestart" class="ghost">回到开头</button>
+      </div>
+      <input type="range" id="scrub" min="0" max="4000" value="0" step="1" style="margin-top:11px" />
+      <div class="time"><span id="tCur">00:00.00</span><span id="tTot">00:04.00</span></div>
+    </div>
+
+    <div class="card">
+      <h2>为什么是五镜，不是一张图</h2>
+      <div class="kv">
+        <b>牌</b><span>拉丝不锈钢 <code>#98A0A8</code>，3200 条横向拉丝 + 9 道深沟，模块初始化时算一次</span>
+        <b>刻字</b><span>凹刻 <code>#464D54</code> — 上沿压暗 <code>#22282D</code>、下沿提亮 <code>#FFFFFF</code></span>
+        <b>暖色</b><span>检验章 <code>#C9A227</code>，全片唯一一处暖色，面积不到 1%</span>
+      </div>
+      <div class="hint" style="margin-top:10px">
+        铭牌只有终态，没有过程可演——这一点和丝网正好相反：07 的价值在<b>错版发生的那一刻</b>，09 的价值在<b>过程已经结束</b>。所以这五镜不是在讲"怎么办"，是在讲"办完了"。
+      </div>
+      <div class="hint" style="margin-top:8px">
+        凹刻是<b>上暗下亮</b>：光从上往下照，凹槽上沿背光、下沿接光。写反就是浮雕——字会凸出来。这条比后面所有配色都重要。
+      </div>
+      <div class="hint" style="margin-top:8px">
+        22 秒已经是这套介质的上限。再长就得编内容，而铭牌上本来没那么多字。三种实验里它<b>最弱</b>，理由写在案例卡的已知缺陷前两条。
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#6B737B"></div>
+        <div class="sw" style="background:#98A0A8"></div>
+        <div class="sw" style="background:#DAE0E5"></div>
+        <div class="sw" style="background:#464D54"></div>
+        <div class="sw" style="background:#C9A227"></div>
+        <div class="sw" style="background:#1E2226"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>显示 / 导出</h2>
+      <div class="row" style="margin-bottom:9px">
+        <label class="chk"><input type="checkbox" id="chkSafe"> 安全区</label>
+        <label class="chk"><input type="checkbox" id="chkMark"> 帧号</label>
+      </div>
+      <div class="row">
+        <button id="btnFrame">导出当前帧</button>
+        <button id="btnSeq" class="ghost">导出整镜序列</button>
+      </div>
+      <div class="bar"><i id="prog"></i></div>
+      <div class="hint" id="expHint" style="margin-top:8px">逐帧确定性渲染，同一时间点永远同一张图。导出时会自动关掉帧号。</div>
+    </div>
+
+    <div class="card">
+      <h2>五镜在讲什么</h2>
+      <ol>
+        <li><b>M01 空牌</b> — 台面上还没刻字的钢板，从暗到亮。先让人看清这是一块板子，不是一张卡片。</li>
+        <li><b>M02 刻名</b> — 「好礼乐」一个字一个字刻出来。揭示宽度按每个字自己的宽度算，写死一个常数就会变成整行同时出现。</li>
+        <li><b>M03 刻号</b> — 刻线、「NO. 0027」、「R-60 / 2027 年度」，四角铆钉依次落位。</li>
+        <li><b>M04 压章</b> — 金色检验章从 1.6 收到 1 压下去，双层错位，像真盖的。</li>
+        <li><b>M05 光扫过</b> — 一道斜向高光从左走到右。它自己不会亮，亮的是扫过来的光。扫过去就结束，不来回。</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<script src="src/exp-engine.js"></script>
+<script src="src/metal-renderer.js"></script>
+<script>
+(function () {
+  if (!window.ExpKit || !window.Exp) {
+    document.querySelector('.side').innerHTML =
+      '<div class="card">渲染器没加载。要两个文件：<code>renderer/src/exp-engine.js</code> 和 <code>renderer/src/metal-renderer.js</code>。</div>';
+    return;
+  }
+  ExpKit.boot(document.getElementById('cv'), window.Exp);
+})();
+</script>
+</body>
+</html>

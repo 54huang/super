@@ -96,12 +96,12 @@
 
 <header>
   <h1>super</h1>
-  <p>三种已经跑通的视觉风格，和一条能走完的制作流程。先挑风格，再照流程做。</p>
+  <p>三种已经出过片的风格、三种还在实验台上的风格，和一条能走完的制作流程。先挑风格，再照流程做。</p>
 </header>
 
 <section style="margin-top:0">
   <h2>风格展示台</h2>
-  <p class="lead">每种风格不是一张皮，是一整套画面约束——色值、线宽、字号、能不能表达某种语义，都在里面。选定之后，下面的「引导块」可以直接拿去用。</p>
+  <p class="lead">每种风格不是一张皮，是一整套画面约束——色值、线宽、字号、能不能表达某种语义，都在里面。前三种有成品可对照；后三种只有五镜工作台，能切镜、能拖时间轴、能导出任意一帧，但都还没配音成片。选定之后，下面的「引导块」可以直接拿去用。</p>
 
   <div class="grid">
 
@@ -192,6 +192,106 @@
       </div>
     </article>
 
+
+    <article class="card">
+      <div class="shot"><img src="docs/samples/style-07-riso.png" alt="丝网印刷风格示例：米色纸上一块青色标题「已交付」被粉色版错开 5px，下方一条网点进度条"></div>
+      <div class="body">
+        <div class="id">07 · 实验 · 五镜工作台</div>
+        <h3>丝网印刷</h3>
+        <p class="oneliner">说好的一版，和印出来的一版，永远差一点。</p>
+        <dl>
+          <dt>适合</dt><dd>题材在讲复刻与失真——原文／转述、承诺／交付、设计稿／成品；要「便宜而认真」的气质；颜色少但要很响</dd>
+          <dt>别用</dt><dd>要高级感、要贵；要读长文（正文只能单版）；要真实照片的质感；横屏</dd>
+        </dl>
+        <div class="acts">
+          <a class="primary" href="renderer/riso.html">打开工作台</a>
+          <a href="docs/cases/07-丝网印刷.md">读风格卡</a>
+        </div>
+        <details>
+          <summary>复制引导块</summary>
+<pre>视觉：两色丝网印刷（riso）海报，暖米色再生纸上叠两块色版，第二块版没对准。
+纸：#F1EBDE；纤维 420 根（8–38px，alpha 0.12–0.32，线宽 0.8–2.4）+ 杂点 2200 个（1.7px）。
+油墨只有两种，没有黑：
+  版一 青 #1E6F8A —— 标题、数字、正文、结构线、进度条
+  版二 荧光粉 #FF4E7A —— 标题第二遍、实色块、图形外框、未完成段的网点
+  第三色 #1E2242 是两版相乘的结果，不是独立油墨；最深的地方就是两版都印过的地方。
+叠印：整幅走 multiply（减色相乘），不许用半透明压一层来"假装"叠印。
+错版：版二整体偏移 (x+5, y−4) 并旋转 0.0016rad；错版量 ≤ 字高 1/8，正文一律单版。
+网点：间距 7px，点径 2.3×(0.7–1.3)，位置抖 ±0.7px；只撒在色块内，纸的空白处不上墨。
+套准：四角 34px 直角，#1E2242 alpha 0.55；色标条三块（青/粉/深靛）+ 一行 "2 INKS · 3 COLORS · MISREG 5px"。
+版式：眉标 28px mono、标题 104px、大数字 150px、正文 30px、说明 26px mono、论点句 36px 宋体。
+不要：纯黑墨、发光、投影、圆角卡片、渐变、锐利的实色大块（要有刮刀痕）、系统默认字距。</pre>
+        </details>
+        <p class="meta">5 镜 · 23.5 秒 · 9:16 · 未配音出片</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="docs/samples/style-08-eink.png" alt="电子墨水屏风格示例：暖灰底上一份待确认清单，第一行留着淡灰重影，下半部浮着上一屏的旧表格"></div>
+      <div class="body">
+        <div class="id">08 · 实验 · 五镜工作台</div>
+        <h3>电子墨水屏</h3>
+        <p class="oneliner">改一次要闪一次，旧内容不会立刻走。</p>
+        <dl>
+          <dt>适合</dt><dd>讲信息滞后、等待、版本没同步；要冷静克制不催促的气质；内容以文字与列表为主</dd>
+          <dt>别用</dt><dd>要视觉冲击、要快节奏；要彩色；要精确图表；当深色模式用</dd>
+        </dl>
+        <div class="acts">
+          <a class="primary" href="renderer/eink.html">打开工作台</a>
+          <a href="docs/cases/08-电子墨水屏.md">读风格卡</a>
+        </div>
+        <details>
+          <summary>复制引导块</summary>
+<pre>视觉：无背光的电子墨水屏（e-ink），暖灰底、墨非纯黑，改过的内容留着浅灰残影。
+底：#D5D3CA（不是白，带一点绿黄）；墨 #1B1B18，最高 alpha 0.95，全程没有 alpha 为 1 的地方。
+环境光：竖向线性——顶部 rgba(255,255,255,0.10) → 45% 归零 → 底部 rgba(60,58,50,0.16)。
+        光从上面来，越靠下越暗；不许用中心径向渐变（会变成镜头暗角）。
+alpha 阶梯：主文 0.95 / 次要 0.78 / 禁用 0.46 / 残影轮廓 0.07×6 个方向（刚被替换）、0.24（上一屏说明）、0.12–0.22（整屏遗留）。
+刷新区：底色 #C6C4BA alpha 0.42，只覆盖被刷新的那一行（行高 120px）；
+        旧值不留成一个能读的字，留成一圈轮廓：#5E5C55 六个方向各偏 2px、每条 alpha 0.07。
+残影分区：整屏遗留的旧表格放在当前内容的空白带（y 1010–1250），不许和列表叠。
+边框线：#B9B7AE，1.6px；按钮框 1.8px，圆角 0。
+版式：状态栏 26px y120、标题 76px y420、列表 38px/32px 行距 120、按钮 34px y1560、页脚 24px mono y1790。
+时间：整屏刷 = 全黑 0–10% → 全白 10–20% → 落字 22–62%；局部改 = 刷新区 25–75%，残影同步淡入。
+不要：纯白、纯黑、投影、发光、圆角、彩色、扫描线式的拖影、满屏均匀噪点。</pre>
+        </details>
+        <p class="meta">5 镜 · 23.5 秒 · 9:16 · 未配音出片</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="docs/samples/style-09-metal.png" alt="金属铭牌风格示例：深灰台面上一块拉丝铝牌，凹刻「好礼乐」，四角铆钉，右上角一枚金色检验章"></div>
+      <div class="body">
+        <div class="id">09 · 实验 · 五镜工作台</div>
+        <h3>金属铭牌</h3>
+        <p class="oneliner">刻上去就改不动，全片只有一个终态。</p>
+        <dl>
+          <dt>适合</dt><dd>定论、盖棺、不可撤销——认证、资质、编号、落章；要冷、硬、有分量；天生适合做片尾那一句</dd>
+          <dt>别用</dt><dd>要演「变化」；要长片（22 秒到顶）；要小屏上的细节；要暖、要有人</dd>
+        </dl>
+        <div class="acts">
+          <a class="primary" href="renderer/metal.html">打开工作台</a>
+          <a href="docs/cases/09-金属铭牌.md">读风格卡</a>
+        </div>
+        <details>
+          <summary>复制引导块</summary>
+<pre>视觉：拉丝铝铭牌，深灰工作台上，凹刻字 + 四角铆钉 + 一枚金色检验章。
+牌体：920×660，居中偏上；竖向六档渐变 #C6CDD4 → #DAE0E5(10%) → #98A0A8(42%)
+      → #C0C7CE(72%) → #6B737B(94%) → #868E96；中间调不许亮过 #A8AEB4（过白就像塑料）。
+拉丝：3200 条水平细线，多数贯通全宽，线宽 0.5–1.3px；
+      亮线 #FFFFFF alpha 0.03–0.16、暗线 #3F464D alpha 0.03–0.14；另加 9 道深沟打破均匀。
+倒角：上沿与左沿 #FFFFFF alpha 0.6 / 3px，下沿与右沿 #31373D alpha 0.55——没有这一圈就是贴纸。
+铆钉：半径 18，四角内缩 52，径向 #FAFCFD → #A9AFB6(42%) → #4E555C，附一道刻槽。
+凹刻字（关键）：光从上往下照，凹槽上沿背光、下沿接光，所以是「上暗下亮」：
+      上沿 #22282D alpha 0.90、下沿 #FFFFFF alpha 0.88，偏移 = 字号 × 0.075，槽底 #464D54 alpha 0.97。
+      写成上亮下暗就是浮雕（凸的），整张牌的语义就反了。
+字号：主体名 86px / 编号 58px 等宽 / 说明 34px / 年份 30px；四行以上就不像铭牌了。
+暖色：只允许一处 —— 检验章 #C9A227 圆环 r62、线宽 3、两行 26px 字。
+时间：光从左扫到右 + 牌体推近 1.0→1.06；不旋转、不翻转（一翻就露厚度）。
+不要：纯白高光、镜面反射、发光、投影贴纸式的假阴影、圆角、第二处暖色、把铭牌当卡片排版。</pre>
+        </details>
+        <p class="meta">5 镜 · 22 秒 · 9:16 · 未配音出片</p>
+      </div>
+    </article>
+
   </div>
 </section>
 
@@ -216,11 +316,11 @@
     <li><a class="link" href="PROCESS.md">PROCESS.md</a> — 为什么要这么排，最容易错在哪</li>
     <li><a class="link" href="docs/verification.md">docs/verification.md</a> — 验过什么、结果，以及<strong>没验什么</strong></li>
     <li><a class="link" href="docs/decisions/">docs/decisions/</a> — 每个关键决定一篇 ADR，含代价</li>
-    <li><a class="link" href="docs/cases/">docs/cases/</a> — 四个方向各一张卡，每张都写明<strong>已知缺陷</strong></li>
+    <li><a class="link" href="docs/cases/">docs/cases/</a> — 九张卡，每张都写明<strong>已知缺陷</strong>，包括做到一半才发现的那几条</li>
     <li><a class="link" href="CHANGELOG.md">CHANGELOG.md</a> — 每次改动连踩的坑一起记，比如「浏览器能画中文不等于 Node 能画」</li>
   </ul>
   <p class="notes" style="margin-top:20px;padding-left:0">
-    规则没有停在文字上：<code>npm test</code> 会把它们变成会失败的断言，65 项。
+    规则没有停在文字上：<code>npm test</code> 会把它们变成会失败的断言，68 项。
   </p>
 </section>
 

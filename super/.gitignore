@@ -5,6 +5,8 @@ package-lock.json
 # 导出产物（帧序列、合成视频都不入库）
 exports/
 frames/
+# 逐帧试看的临时出图目录（.exp/ 里都是可以随时重出的一张图）
+.exp/
 *.mp4
 *.mov
 S0*_*.png

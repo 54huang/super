@@ -1,12 +1,15 @@
 # 渲染器目录
 
-这里有三个渲染器，对应案例库里的三个现役案例。
+这里有六个工作台，对应案例库里的六个案例。前三个是成片级实现（每镜内容写死在函数里），后三个是实验级实现（三种介质共用一台引擎，风格文件只提供色板与分镜）。
 
 | 页面 | 案例 | 镜头 | 实现 |
 |---|---|---|---|
 | `index.html` | 案例 02 制图台 | **7 镜全片**（S01–S07，30.000 秒） | `src/shot-renderer.js` |
 | `scope.html` | 案例 03 示波器 | 8 镜（P01–P08，32 秒） | `src/scope-renderer.js` |
 | `board.html` | 案例 04 黑板粉笔 | 8 镜（B01–B08，32 秒） | `src/board-renderer.js` |
+| `riso.html` | 案例 07 丝网印刷 | 5 镜（R01–R05，23.5 秒） | `src/riso-renderer.js` + `src/exp-engine.js` |
+| `eink.html` | 案例 08 电子墨水屏 | 5 镜（E01–E05，23.5 秒） | `src/eink-renderer.js` + `src/exp-engine.js` |
+| `metal.html` | 案例 09 金属铭牌 | 5 镜（M01–M05，22 秒） | `src/metal-renderer.js` + `src/exp-engine.js` |
 | — | 案例 01 深空蓝 | 3 镜（已弃用） | `legacy/shot-renderer.v1.js` |
 
 **这份 README 只讲目录结构与可调参数。** 视觉是怎么构成的、技术点、已知缺陷、换题材怎么迁移，都在 `../docs/cases/` 的五张卡里——那才是参考存储的正文。
@@ -16,20 +19,46 @@ renderer/
 ├── index.html                  ← 制图台工作台（打开即用）
 ├── scope.html                  ← 示波器工作台（打开即用）
 ├── board.html                  ← 黑板粉笔工作台（打开即用）
+├── riso.html                   ← 丝网印刷工作台（打开即用）
+├── eink.html                   ← 电子墨水屏工作台（打开即用）
+├── metal.html                  ← 金属铭牌工作台（打开即用）
 ├── src/shot-renderer.js        ← v2 全部绘制逻辑
 ├── src/scope-renderer.js       ← v3 全部绘制逻辑
 ├── src/board-renderer.js       ← v4 全部绘制逻辑
+├── src/exp-engine.js           ← 三个实验工作台共用的引擎（播放/切镜/时间轴/导帧）
+├── src/exp-shell.css           ← 三个实验工作台共用的布局（颜色走变量）
+├── src/riso-renderer.js        ← 07 的分镜与画法
+├── src/eink-renderer.js        ← 08 的分镜与画法
+├── src/metal-renderer.js       ← 09 的分镜与画法
 ├── legacy/shot-renderer.v1.js  ← v1 留档
 └── README.md
 ```
 
-三个页面都是纯本地、无依赖、无 CDN。测试统一收在仓库根 `tests/`。
+六个页面都是纯本地、无依赖、无 CDN。测试统一收在仓库根 `tests/`。
 
 ```bash
-npm test                              # 全部契约测试（65 项）
+npm test                              # 全部契约测试（68 项）
 node --test tests/renderer.test.mjs   # 只跑 v2
 node --test tests/scope.test.mjs      # 只跑 v3
 node --test tests/board.test.mjs      # 只跑 v4
+node --test tests/cases.test.mjs      # 案例卡 + 三个实验介质的导出契约
+```
+
+---
+
+## 三个实验工作台：同一台机器换介质
+
+07 / 08 / 09 不各写一套播放逻辑。切镜、播放/循环、拖时间轴到毫秒、← → 逐帧、安全区与帧号开关、导出当前帧、导出整镜序列，全在 `src/exp-engine.js` 里写一遍；风格文件只导出 `window.Exp = { id, label, PAL, SHOTS }`，每镜是 `{ id, name, dur, draw(c, t, p) }`。
+
+**这样做的直接好处是改一处、三个页面一起改。** 副作用是引擎绑控件时"元素不存在就跳过"（否则它在 node 里跑不起来），所以少一个 `id`、路径写错，页面照样打开、按钮就是不动。这条静默失败靠断言兜：`tests/docs.test.mjs` 会把每个外壳引用的文件和控件数一遍。
+
+任意一帧可以在命令行重出，不用开浏览器：
+
+```bash
+NAPI_CANVAS_PATH=D:/Tools/fontlab/node_modules/@napi-rs/canvas \
+  node scripts/exp-render.mjs --style riso --shot R05 --t 1 --w 720 --out a.png
+
+node scripts/exp-render.mjs --style eink --list      # 看有几镜、各多长
 ```
 
 ---
@@ -220,4 +249,5 @@ ffmpeg -i selfcheck.mp4 2>&1 | grep -E "Duration|Stream #"   # 核对时长、�
 
 - `node --check` 两个渲染器语法均通过。
 - 逐帧冒烟测试：v2 七镜 **1150 个时间点**、全片 **900 帧连续渲染**、v3 八镜 964 个时间点，全部 0 异常，由 `tests/` 里的断言覆盖。
+- 三个实验工作台另跑了一遍完整冒烟：用 `@napi-rs/canvas` 顶替浏览器 Canvas，**5 镜 × 5 个时刻 × 3 种介质 = 75 帧**，引擎 `boot()` 绑定、各镜 `draw()` 全部 0 异常，且没有一帧是空的（这条是当场跑的一次性脚本，没进 `tests/`——它要装依赖，不适合进 CI）。
 - **视觉效果未截图核验**——本机无无头浏览器。构图与节奏是按设计写死的，但"好不好看"需要人看一眼。

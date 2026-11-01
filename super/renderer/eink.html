@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>电子墨水屏工作台 · 08「滞后」— 5 镜（9:16 · 1080×1920 · 30fps）</title>
+<link rel="stylesheet" href="src/exp-shell.css" />
+<style>
+  /* 这一台是浅底的：一块没有背光的屏，配深色 UI 是自相矛盾的。
+     只覆盖颜色变量，布局一条不动。 */
+  :root{ --accent:#3A3830; --accent-bg:rgba(27,27,24,.10); --accent-line:rgba(27,27,24,.55); }
+</style>
+</head>
+<body class="light">
+
+<header>
+  <h1>电子墨水屏工作台 · 季度复盘</h1>
+  <div class="meta">08 · 5 镜 · 23500ms · 1080×1920 · 9:16 · 30fps · 确定性逐帧 · 改一次，闪一次</div>
+</header>
+
+<main>
+  <div class="stage">
+    <div class="frame"><canvas id="cv"></canvas></div>
+    <div class="row" style="justify-content:center">
+      <span class="tag" id="shotTag">E01</span>
+      <span class="meta" id="frameInfo">帧 0 / 0</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2>镜头 / 播放</h2>
+      <div class="row" id="shotBtns" style="margin-bottom:9px"></div>
+      <div class="row">
+        <button id="btnPlay" class="active">暂停</button>
+        <button id="btnLoop" class="ghost">循环：开</button>
+        <button id="btnRestart" class="ghost">回到开头</button>
+      </div>
+      <input type="range" id="scrub" min="0" max="4500" value="0" step="1" style="margin-top:11px" />
+      <div class="time"><span id="tCur">00:00.00</span><span id="tTot">00:04.50</span></div>
+    </div>
+
+    <div class="card">
+      <h2>为什么是五镜，不是一张图</h2>
+      <div class="kv">
+        <b>底</b><span>灰 <code>#D5D3CA</code> — 无背光的纸浆屏，颗粒 5200 点，全屏压一层</span>
+        <b>墨</b><span><code>#1B1B18</code> — 只有黑白两态，没有中间调；「已否决」那一行刻意压到 alpha 0.46</span>
+        <b>残影</b><span><code>#5E5C55</code> — 六个方向各偏 2px、每条 alpha 0.07，叠出来才是"这块被刷脏了"</span>
+      </div>
+      <div class="hint" style="margin-top:10px">
+        一块无背光的屏，画面不能"亮"，只能<b>换</b>。静止的一张图和打印机出来的纸长得一样——这套介质全部的特征都在<b>换的那一刻</b>：整屏闪黑、闪白、落字，旧的内容不肯立刻走。
+      </div>
+      <div class="hint" style="margin-top:8px">
+        所以五镜按真实设备的行为排：整屏刷 → 局部改一条 → 鬼影浮上来 → 再改一条（两层残影并存）→ 安静下来。顺序不是叙事选择，是<b>器件时序</b>。
+      </div>
+      <div class="hint" style="margin-top:8px">
+        还有一条是排版决定的：三个旧值一律比新值长（待审批→已批、待法务→通过）。右对齐时旧值才能从左边露出来；反过来新值更长，鬼影会被新字整个盖住，白画。
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#D5D3CA"></div>
+        <div class="sw" style="background:#1B1B18"></div>
+        <div class="sw" style="background:#6F6D66"></div>
+        <div class="sw" style="background:#B9B7AE"></div>
+        <div class="sw" style="background:#C6C4BA"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>显示 / 导出</h2>
+      <div class="row" style="margin-bottom:9px">
+        <label class="chk"><input type="checkbox" id="chkSafe"> 安全区</label>
+        <label class="chk"><input type="checkbox" id="chkMark"> 帧号</label>
+      </div>
+      <div class="row">
+        <button id="btnFrame">导出当前帧</button>
+        <button id="btnSeq" class="ghost">导出整镜序列</button>
+      </div>
+      <div class="bar"><i id="prog"></i></div>
+      <div class="hint" id="expHint" style="margin-top:8px">逐帧确定性渲染，同一时间点永远同一张图。导出时会自动关掉帧号。</div>
+    </div>
+
+    <div class="card">
+      <h2>五镜在讲什么</h2>
+      <ol>
+        <li><b>E01 整屏刷新</b> — 黑一下、白一下，再落字。状态栏「09:41 季度复盘」，标题「待确认」，A/B/C 三行方案。这一下闪是这套介质唯一的高潮，不能省。</li>
+        <li><b>E02 改一条</b> — 只刷第一行：底色比别处浅一格，旧值「待审批」在「已批」左边留一圈淡灰轮廓。</li>
+        <li><b>E03 鬼影</b> — 上一屏的旧表格（上月结转 / 7 月 / 8 月 / 9 月）从下往上浮出来，落在当前内容的空白带里。屏幕是记事的。</li>
+        <li><b>E04 再改一条</b> — 第二行「待法务 → 通过」。两层残影同时在：A 行是刚才的，B 行是现在的。</li>
+        <li><b>E05 安静下来</b> — 不再动它。字幕退到下面：「改过的东西，不会立刻走。」</li>
+      </ol>
+    </div>
+  </div>
+</main>
+
+<script src="src/exp-engine.js"></script>
+<script src="src/eink-renderer.js"></script>
+<script>
+(function () {
+  if (!window.ExpKit || !window.Exp) {
+    document.querySelector('.side').innerHTML =
+      '<div class="card">渲染器没加载。要两个文件：<code>renderer/src/exp-engine.js</code> 和 <code>renderer/src/eink-renderer.js</code>。</div>';
+    return;
+  }
+  ExpKit.boot(document.getElementById('cv'), window.Exp);
+})();
+</script>
+</body>
+</html>
