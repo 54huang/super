@@ -1,4 +1,4 @@
-// 素材库契约测试：50 个仓库、24 个节点、每个节点都有实体文件
+// 素材库契约测试：50 个仓库、29 个节点、每个节点都有实体文件
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -34,13 +34,13 @@ test('仓库地址唯一且都在 github.com', () => {
   }
 });
 
-test('节点恰好 24 个，编号 N01–N24 不重复', () => {
+test('节点恰好 29 个，编号 N01–N29 不重复', () => {
   const nodes = repos.filter(r => r.node).map(r => r.node);
-  assert.equal(nodes.length, 24);
-  assert.equal(new Set(nodes).size, 24);
+  assert.equal(nodes.length, 29);
+  assert.equal(new Set(nodes).size, 29);
   const sorted = [...nodes].sort();
   assert.equal(sorted[0], 'N01');
-  assert.equal(sorted.at(-1), 'N24');
+  assert.equal(sorted.at(-1), 'N29');
 });
 
 test('每个节点在 library 下都有对应的说明文件', () => {
@@ -71,7 +71,7 @@ test('每个分类的 README 覆盖该分类下的全部仓库', () => {
   }
 });
 
-test('节点总表覆盖全部 24 个节点', () => {
+test('节点总表覆盖全部 29 个节点', () => {
   const t = fs.readFileSync(path.join(LIB, '00_起点/节点总表.md'), 'utf8');
   const nums = new Set([...t.matchAll(/\|\s*(N\d{2})\s*\|/g)].map(m => m[1]));
   for (const r of repos.filter(x => x.node)) {

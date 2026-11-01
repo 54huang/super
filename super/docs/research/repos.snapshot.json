@@ -147,7 +147,7 @@
       "language": "-",
       "pushedAt": "2026-09-27",
       "createdAt": "2026-09-20",
-      "node": null,
+      "node": "N25",
       "purpose": "机位/运镜/灯光/构图/调色 5 张速查卡",
       "topics": [
         "ai-video",
@@ -168,7 +168,7 @@
       "language": "Python",
       "pushedAt": "2026-10-24",
       "createdAt": "2026-06-03",
-      "node": null,
+      "node": "N27",
       "purpose": "剧情摘要 → 情绪/结构诊断 → 分镜级提示词",
       "topics": []
     },
@@ -182,7 +182,7 @@
       "language": "-",
       "pushedAt": "2026-06-10",
       "createdAt": "2026-06-09",
-      "node": null,
+      "node": "N26",
       "purpose": "FPV/穿越机第一视角的路线式镜头写法",
       "topics": [
         "ai-video",
@@ -765,7 +765,7 @@
       "language": "JavaScript",
       "pushedAt": "2026-10-27",
       "createdAt": "2026-09-27",
-      "node": null,
+      "node": "N28",
       "purpose": "动效案例+源码+提示词，找参考最快",
       "topics": [
         "ai-video",
@@ -877,7 +877,7 @@
       "language": "Python",
       "pushedAt": "2026-10-02",
       "createdAt": "2026-09-20",
-      "node": null,
+      "node": "N29",
       "purpose": "海螺 H3 的视频反推：首帧/动态/AUTO 模式",
       "topics": []
     },

@@ -7,7 +7,7 @@
 |---|--:|--:|---|---|---|:--:|
 | 47 | [raojiacui/prompt-lens](https://github.com/raojiacui/prompt-lens) | 652 | Web 应用 (TS) | 反推 AI 视频提示词：画面分析 + 音频识别（台词文案提取）+ 一句话剪辑，Next.js 自部署 | **拆解对标视频的首选**：从"画面怎么构成"和"说了什么"两头拆，产出可直接改的提示词 | N24 |
 | 48 | [CattleZ/dance-video-to-prompt](https://github.com/CattleZ/dance-video-to-prompt) | 146 | 脚本 (Py) | 本地短视频反推：抽帧、清晰度评估、节奏卡点，配 Agent Skill | 只关心"节奏与卡点"时用它：舞蹈/卡点类内容的镜头长度是被音乐决定的，这套能把节拍点标出来 | - |
-| 49 | [gnipbao/minimax-h3-video-reverse-skill](https://github.com/gnipbao/minimax-h3-video-reverse-skill) | 285 | Skill (py+md) | 海螺 H3 视频反推：真实镜头、首帧与动态提示词，AUTO/T2VA/I2V/DUAL 模式，附中文教程 | 用海螺时的专用反推：它区分"首帧"和"动态"两段输出，正好对上 H3 的输入习惯 | - |
+| 49 | [gnipbao/minimax-h3-video-reverse-skill](https://github.com/gnipbao/minimax-h3-video-reverse-skill) | 285 | Skill (py+md) | 海螺 H3 视频反推：真实镜头、首帧与动态提示词，AUTO/T2VA/I2V/DUAL 模式，附中文教程 | 用海螺时的专用反推：它区分"首帧"和"动态"两段输出，正好对上 H3 的输入习惯 | N29 |
 | 50 | [WangWenhao0716/VidProM](https://github.com/WangWenhao0716/VidProM) | 188 | 数据集 | NeurIPS 2024，百万级真实文生视频提示词语料（来自真实用户，不是合成） | **研究"真实用户到底怎么写"**：统计高频结构、长度分布、修饰词偏好，用来校准自己的提示词长度与信息密度 | - |
 
 ---
@@ -18,6 +18,8 @@
 2. **分层拆**：这一镜里分别拆出 —— 主体、动作、环境、景别、机位、运动、光线、色调。
 3. **填回骨架**：按 `00_起点/可直接粘贴模板.md` 的六段式填，缺的项标"待定"，别自己编。
 4. **换主体不换结构**：结构是别人的经验，主体要换成自己的，否则就是搬运。
+
+> 上面四步产出的是一段"描述"。要把它变成能直接拿去生成的任务，走 **N29**：它把每镜拆成「首帧提示词 + 动态提示词」两段，一个硬切就是一条独立生成任务。区别在于——描述可以合并，任务不能。
 
 ## 为什么"结构化"比"写得更长"有用
 

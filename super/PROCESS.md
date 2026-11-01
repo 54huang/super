@@ -65,7 +65,7 @@ curl -s "https://api.github.com/search/repositories?q=sora+prompt&sort=stars&ord
   - `library/<分类目录>/README.md`：收录逻辑 + 全部分仓表格（来源 / 用途 / 节点标记）+ 取用顺序
   - `library/00_起点/` 四份导航：全仓清单、节点总表、需求速查、可直接粘贴模板
   - `docs/research/repos.snapshot.json`：机器可读快照
-- 验收：8 个目录齐全、每个目录有 README、24 个节点各有 `Nxx_*.md`、编号连续（`tests/library.test.mjs` 自动核对）
+- 验收：8 个目录齐全、每个目录有 README、29 个节点各有 `Nxx_*.md`、编号连续（`tests/library.test.mjs` 自动核对）
 - **最容易错**：按模型分类。抖音的生产链路是"想法 → 文案 → 分镜 → 单镜提示词 → 出片"，按模型分类会让你在每个模型目录里重复放一遍"怎么切镜"。
 
 ---

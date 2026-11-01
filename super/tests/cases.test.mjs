@@ -4,6 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 import { ROOT } from './_env.mjs';
 
 const DIR = path.join(ROOT, 'docs/cases');
@@ -66,6 +67,37 @@ test('换个题材怎么改：必须有可执行步骤，不是一句感想', ()
     const body = text.slice(start + 10).trim();
     const steps = (body.match(/^\d\.\s/gm) || []).length;
     assert.ok(steps >= 3, `${f} 的迁移方法只有 ${steps} 步，少于 3 步就不可执行`);
+  }
+});
+
+// 实验卡（07–09）的样图是可以重新出一遍的：卡里就写着命令。
+// 但命令里的 --style 一旦和渲染器对不上，那行字就变成"看起来像命令的装饰"——
+// 页面照开、图照显示，只是再也复现不出来。没人会收到通知，所以让测试替人跑。
+test('实验卡的出图命令指向真实存在的风格', () => {
+  const src = fs.readFileSync(path.join(ROOT, 'renderer/exp/styles.js'), 'utf8');
+  const sandbox = { window: {} };
+  sandbox.window = sandbox;
+  vm.createContext(sandbox);
+  vm.runInContext(src, sandbox, { filename: 'styles.js' });
+
+  const styles = Object.keys(sandbox.Exp.STYLES);
+  assert.deepEqual(styles.sort(), ['eink', 'metal', 'riso'], `实验渲染器导出的风格变了：${styles}`);
+
+  const exp = files.filter(f => /状态：实验/.test(fs.readFileSync(path.join(DIR, f), 'utf8')));
+  assert.ok(exp.length >= 3, `只找到 ${exp.length} 张实验卡，像是状态标注丢了`);
+
+  for (const f of exp) {
+    const text = fs.readFileSync(path.join(DIR, f), 'utf8');
+    const used = [...text.matchAll(/--style\s+(\w+)/g)].map(m => m[1]);
+    assert.ok(used.length > 0, `${f} 没写复现命令，别人拿不到这张样图`);
+    for (const s of used) {
+      assert.ok(styles.includes(s), `${f} 里的 --style ${s} 不在 styles.js 里（可选 ${styles.join(' / ')}）`);
+    }
+    const imgs = [...text.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map(m => m[1]);
+    assert.ok(imgs.length > 0, `${f} 没有嵌样图`);
+    for (const p of imgs) {
+      assert.ok(fs.existsSync(path.join(DIR, p)), `${f} 嵌的样图 ${p} 不存在`);
+    }
   }
 });
 
